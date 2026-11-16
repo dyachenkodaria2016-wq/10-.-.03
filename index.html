@@ -1,0 +1,2843 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LIST//LAB — Python Data Laboratory (10 клас)</title>
+<style>
+  :root {
+    --bg-main: #f4f7fb;
+    --bg-surface: rgba(255, 255, 255, 0.88);
+    --bg-card: #ffffff;
+    --bg-subtle: #edf2f8;
+    --text-primary: #14213d;
+    --text-secondary: #4a5568;
+    --text-muted: #718096;
+    --accent-cyan: #00a8cc;
+    --accent-blue: #2563eb;
+    --accent-violet: #7c3aed;
+    --accent-teal: #0d9488;
+    --holo-gradient: linear-gradient(135deg, #e0f2fe 0%, #ede9fe 50%, #ccfbf1 100%);
+    --holo-border: linear-gradient(135deg, #38bdf8, #a78bfa, #2dd4bf);
+    --btn-gradient: linear-gradient(135deg, #0284c7 0%, #2563eb 55%, #7c3aed 100%);
+    --success: #059669;
+    --success-bg: #ecfdf5;
+    --warning: #d97706;
+    --warning-bg: #fffbeb;
+    --error: #dc2626;
+    --error-bg: #fef2f2;
+    --border-light: #dbe4f0;
+    --shadow-sm: 0 2px 8px rgba(15, 23, 42, 0.05);
+    --shadow-md: 0 8px 24px rgba(15, 23, 42, 0.08);
+    --shadow-lg: 0 16px 40px rgba(37, 99, 235, 0.12);
+    --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    --font-mono: "Consolas", "Monaco", "Courier New", monospace;
+    --radius-sm: 8px;
+    --radius-md: 14px;
+    --radius-lg: 20px;
+  }
+
+  * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+
+  body {
+    font-family: var(--font-sans);
+    background-color: var(--bg-main);
+    background-image:
+      radial-gradient(circle at 10% 15%, rgba(56, 189, 248, 0.14), transparent 38%),
+      radial-gradient(circle at 90% 20%, rgba(167, 139, 250, 0.14), transparent 40%),
+      radial-gradient(circle at 50% 90%, rgba(45, 212, 191, 0.12), transparent 45%);
+    background-attachment: fixed;
+    color: var(--text-primary);
+    line-height: 1.6;
+    min-height: 100vh;
+  }
+
+  /* Tech grid overlay */
+  body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    background-image: linear-gradient(to right, rgba(148, 163, 184, 0.07) 1px, transparent 1px),
+                      linear-gradient(to bottom, rgba(148, 163, 184, 0.07) 1px, transparent 1px);
+    background-size: 36px 36px;
+    pointer-events: none;
+    z-index: -1;
+  }
+
+  .hidden { display: none !important; }
+
+  /* Registration Screen */
+  .reg-wrapper {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+  }
+
+  .reg-card {
+    width: 100%;
+    max-width: 520px;
+    background: var(--bg-surface);
+    backdrop-filter: blur(16px);
+    border: 1px solid rgba(255, 255, 255, 0.9);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-lg);
+    padding: 36px 32px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .reg-card::before {
+    content: "";
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 5px;
+    background: var(--holo-border);
+  }
+
+  .lab-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 5px 12px;
+    border-radius: 999px;
+    background: var(--holo-gradient);
+    border: 1px solid #cbd5e1;
+    font-size: 0.78rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    color: var(--accent-blue);
+    text-transform: uppercase;
+    margin-bottom: 14px;
+  }
+
+  .reg-title {
+    font-size: 1.85rem;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    margin-bottom: 6px;
+    background: linear-gradient(90deg, #0f172a, #2563eb, #7c3aed);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  .reg-subtitle {
+    color: var(--text-secondary);
+    font-size: 0.95rem;
+    margin-bottom: 24px;
+  }
+
+  .form-group {
+    margin-bottom: 18px;
+  }
+
+  .form-group label {
+    display: block;
+    font-size: 0.88rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 6px;
+  }
+
+  .form-control {
+    width: 100%;
+    padding: 11px 14px;
+    border: 1.5px solid var(--border-light);
+    border-radius: var(--radius-sm);
+    font-size: 0.96rem;
+    font-family: var(--font-sans);
+    background: #ffffff;
+    color: var(--text-primary);
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+
+  .form-control:focus {
+    outline: none;
+    border-color: var(--accent-blue);
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.14);
+  }
+
+  .error-hint {
+    color: var(--error);
+    font-size: 0.84rem;
+    margin-top: 6px;
+    display: none;
+  }
+
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 11px 20px;
+    border-radius: var(--radius-sm);
+    font-size: 0.94rem;
+    font-weight: 600;
+    font-family: var(--font-sans);
+    cursor: pointer;
+    border: 1px solid transparent;
+    transition: all 0.18s ease;
+    text-decoration: none;
+  }
+
+  .btn:active {
+    transform: translateY(1px);
+  }
+
+  .btn-primary {
+    background: var(--btn-gradient);
+    color: #ffffff;
+    box-shadow: 0 4px 14px rgba(37, 99, 235, 0.25);
+  }
+
+  .btn-primary:hover {
+    filter: brightness(1.06);
+    box-shadow: 0 6px 18px rgba(37, 99, 235, 0.32);
+  }
+
+  .btn-secondary {
+    background: #ffffff;
+    color: var(--text-primary);
+    border-color: var(--border-light);
+    box-shadow: var(--shadow-sm);
+  }
+
+  .btn-secondary:hover {
+    background: var(--bg-subtle);
+    border-color: #cbd5e1;
+  }
+
+  .btn-teal {
+    background: #0d9488;
+    color: #ffffff;
+  }
+
+  .btn-teal:hover {
+    background: #0f766e;
+  }
+
+  .btn-warning {
+    background: #fffbeb;
+    color: #b45309;
+    border-color: #fde68a;
+  }
+
+  .btn-warning:hover {
+    background: #fef3c7;
+  }
+
+  .btn-full {
+    width: 100%;
+    padding: 13px 20px;
+    font-size: 1rem;
+  }
+
+  .notice-box {
+    margin-top: 20px;
+    padding: 12px 14px;
+    border-radius: var(--radius-sm);
+    background: #f0f9ff;
+    border: 1px solid #bae6fd;
+    font-size: 0.83rem;
+    color: #0369a1;
+  }
+
+  /* Main App Layout */
+  .app-header {
+    background: rgba(255, 255, 255, 0.92);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border-light);
+    position: sticky;
+    top: 0;
+    z-index: 40;
+    box-shadow: var(--shadow-sm);
+  }
+
+  .header-inner {
+    max-width: 1240px;
+    margin: 0 auto;
+    padding: 12px 20px;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 14px;
+  }
+
+  .brand-area {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .brand-logo {
+    width: 38px;
+    height: 38px;
+    border-radius: 10px;
+    background: var(--btn-gradient);
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--font-mono);
+    font-weight: 800;
+    font-size: 1.05rem;
+    box-shadow: 0 4px 10px rgba(37, 99, 235, 0.25);
+  }
+
+  .brand-text h1 {
+    font-size: 1.15rem;
+    font-weight: 800;
+    letter-spacing: -0.01em;
+    color: var(--text-primary);
+  }
+
+  .brand-text span {
+    font-size: 0.78rem;
+    color: var(--text-muted);
+    display: block;
+  }
+
+  .nav-tabs {
+    display: flex;
+    gap: 6px;
+    background: var(--bg-subtle);
+    padding: 5px;
+    border-radius: 12px;
+    border: 1px solid var(--border-light);
+  }
+
+  .nav-tab {
+    padding: 8px 16px;
+    border-radius: 8px;
+    border: none;
+    background: transparent;
+    font-family: var(--font-sans);
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--text-secondary);
+    cursor: pointer;
+    transition: all 0.18s;
+  }
+
+  .nav-tab:hover {
+    color: var(--text-primary);
+  }
+
+  .nav-tab.active {
+    background: #ffffff;
+    color: var(--accent-blue);
+    box-shadow: 0 2px 6px rgba(15, 23, 42, 0.08);
+  }
+
+  .student-strip {
+    background: var(--holo-gradient);
+    border-bottom: 1px solid var(--border-light);
+  }
+
+  .strip-inner {
+    max-width: 1240px;
+    margin: 0 auto;
+    padding: 10px 20px;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    font-size: 0.88rem;
+  }
+
+  .student-info-pills {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .info-pill {
+    background: rgba(255, 255, 255, 0.85);
+    border: 1px solid rgba(203, 213, 225, 0.8);
+    padding: 4px 12px;
+    border-radius: 999px;
+    font-weight: 600;
+    color: var(--text-primary);
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .info-pill span.val {
+    color: var(--accent-blue);
+    font-weight: 700;
+  }
+
+  .progress-mini {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .progress-track {
+    width: 110px;
+    height: 8px;
+    background: rgba(255, 255, 255, 0.9);
+    border-radius: 999px;
+    overflow: hidden;
+    border: 1px solid #cbd5e1;
+  }
+
+  .progress-fill {
+    height: 100%;
+    background: var(--btn-gradient);
+    width: 0%;
+    transition: width 0.35s ease;
+  }
+
+  .container {
+    max-width: 1240px;
+    margin: 0 auto;
+    padding: 24px 20px 48px;
+  }
+
+  /* Local storage banner */
+  .storage-banner {
+    background: #ffffff;
+    border: 1px solid #bae6fd;
+    border-left: 4px solid var(--accent-cyan);
+    border-radius: var(--radius-sm);
+    padding: 10px 16px;
+    margin-bottom: 20px;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    font-size: 0.86rem;
+    color: var(--text-secondary);
+    box-shadow: var(--shadow-sm);
+  }
+
+  /* Practice Layout: Task Selector + Workspace */
+  .practice-grid {
+    display: grid;
+    grid-template-columns: 290px 1fr;
+    gap: 22px;
+    align-items: start;
+  }
+
+  @media (max-width: 920px) {
+    .practice-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .task-sidebar {
+    background: var(--bg-card);
+    border: 1px solid var(--border-light);
+    border-radius: var(--radius-md);
+    padding: 16px;
+    box-shadow: var(--shadow-md);
+  }
+
+  .sidebar-header {
+    font-size: 0.85rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--text-muted);
+    margin-bottom: 12px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--border-light);
+  }
+
+  .level-group-label {
+    font-size: 0.76rem;
+    font-weight: 700;
+    color: var(--accent-violet);
+    margin: 12px 0 6px;
+    padding-left: 4px;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
+
+  .task-nav-btn {
+    width: 100%;
+    text-align: left;
+    background: var(--bg-main);
+    border: 1px solid transparent;
+    border-radius: var(--radius-sm);
+    padding: 10px 12px;
+    margin-bottom: 6px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    font-family: var(--font-sans);
+    font-size: 0.88rem;
+    color: var(--text-primary);
+    transition: all 0.16s;
+  }
+
+  .task-nav-btn:hover {
+    background: #eef4fc;
+    border-color: #cbd5e1;
+  }
+
+  .task-nav-btn.active {
+    background: #eff6ff;
+    border-color: var(--accent-blue);
+    font-weight: 700;
+    color: var(--accent-blue);
+  }
+
+  .task-nav-btn.completed {
+    border-left: 4px solid var(--success);
+  }
+
+  .task-badge-score {
+    font-size: 0.75rem;
+    font-weight: 700;
+    padding: 2px 7px;
+    border-radius: 999px;
+    background: #e2e8f0;
+    color: var(--text-secondary);
+    white-space: nowrap;
+  }
+
+  .task-nav-btn.completed .task-badge-score {
+    background: var(--success-bg);
+    color: var(--success);
+  }
+
+  /* Task Main Workspace */
+  .task-workspace {
+    background: var(--bg-card);
+    border: 1px solid var(--border-light);
+    border-radius: var(--radius-md);
+    padding: 26px;
+    box-shadow: var(--shadow-md);
+  }
+
+  .task-top-meta {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    margin-bottom: 14px;
+    padding-bottom: 14px;
+    border-bottom: 1px solid var(--border-light);
+  }
+
+  .level-pill {
+    display: inline-block;
+    padding: 4px 12px;
+    border-radius: 999px;
+    font-size: 0.8rem;
+    font-weight: 700;
+  }
+
+  .level-1 { background: #e0f2fe; color: #0369a1; }
+  .level-2 { background: #ede9fe; color: #6d28d9; }
+  .level-3 { background: #ccfbf1; color: #0f766e; }
+
+  .task-metrics-bar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    font-size: 0.84rem;
+    color: var(--text-secondary);
+  }
+
+  .metric-chip {
+    background: var(--bg-subtle);
+    padding: 4px 10px;
+    border-radius: 6px;
+    font-weight: 600;
+  }
+
+  .task-title {
+    font-size: 1.4rem;
+    font-weight: 800;
+    margin-bottom: 14px;
+    color: var(--text-primary);
+  }
+
+  .task-block {
+    margin-bottom: 16px;
+    padding: 14px 16px;
+    border-radius: var(--radius-sm);
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+  }
+
+  .task-block h4 {
+    font-size: 0.84rem;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--accent-blue);
+    margin-bottom: 6px;
+  }
+
+  .task-block p, .task-block ul {
+    font-size: 0.95rem;
+    color: var(--text-primary);
+  }
+
+  .task-block ul {
+    padding-left: 20px;
+    margin-top: 4px;
+  }
+
+  .goal-box {
+    background: #f5f3ff;
+    border-color: #ddd6fe;
+  }
+
+  .goal-box h4 {
+    color: var(--accent-violet);
+  }
+
+  /* IDLE-like Editor & Python Shell (Strictly Vertical!) */
+  .ide-section {
+    margin-top: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .idle-window {
+    border: 1.5px solid #cbd5e1;
+    border-radius: 10px;
+    overflow: hidden;
+    background: #ffffff;
+    box-shadow: var(--shadow-sm);
+  }
+
+  .idle-titlebar {
+    background: linear-gradient(90deg, #e2e8f0, #edf2f7);
+    padding: 7px 14px;
+    border-bottom: 1px solid #cbd5e1;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: #334155;
+  }
+
+  .idle-dots {
+    display: flex;
+    gap: 6px;
+    align-items: center;
+  }
+
+  .idle-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+  }
+
+  .dot-r { background: #f87171; }
+  .dot-y { background: #fbbf24; }
+  .dot-g { background: #34d399; }
+
+  .editor-wrap {
+    display: flex;
+    background: #ffffff;
+    position: relative;
+  }
+
+  .line-numbers {
+    padding: 14px 10px;
+    background: #f8fafc;
+    border-right: 1px solid #e2e8f0;
+    color: #94a3b8;
+    font-family: var(--font-mono);
+    font-size: 0.95rem;
+    line-height: 1.55;
+    text-align: right;
+    user-select: none;
+    min-width: 42px;
+  }
+
+  .code-textarea {
+    width: 100%;
+    min-height: 195px;
+    padding: 14px;
+    border: none;
+    resize: vertical;
+    font-family: var(--font-mono);
+    font-size: 0.96rem;
+    line-height: 1.55;
+    color: #0f172a;
+    background: #ffffff;
+    tab-size: 4;
+  }
+
+  .code-textarea:focus {
+    outline: none;
+    background: #fcfdff;
+  }
+
+  /* Python 3.12 Shell */
+  .shell-window {
+    border: 1.5px solid #cbd5e1;
+    border-radius: 10px;
+    overflow: hidden;
+    background: #ffffff;
+  }
+
+  .shell-header {
+    background: #f1f5f9;
+    padding: 7px 14px;
+    border-bottom: 1px solid #cbd5e1;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: #334155;
+  }
+
+  .sim-badge {
+    background: #e0f2fe;
+    color: #0369a1;
+    border: 1px solid #bae6fd;
+    padding: 2px 8px;
+    border-radius: 999px;
+    font-size: 0.74rem;
+    font-weight: 700;
+  }
+
+  .shell-body {
+    padding: 14px 16px;
+    font-family: var(--font-mono);
+    font-size: 0.92rem;
+    line-height: 1.55;
+    background: #ffffff;
+    min-height: 145px;
+    max-height: 310px;
+    overflow-y: auto;
+    white-space: pre-wrap;
+    word-break: break-word;
+  }
+
+  .shell-banner {
+    color: #475569;
+    margin-bottom: 8px;
+  }
+
+  .shell-cmd {
+    color: #7c2d12;
+    font-weight: 600;
+  }
+
+  .shell-prompt {
+    color: #dc2626;
+    font-weight: 700;
+  }
+
+  .shell-out {
+    color: #1d4ed8;
+    background: #f8fafc;
+    border-left: 3px solid #93c5fd;
+    padding: 4px 10px;
+    margin: 4px 0 8px;
+    display: block;
+  }
+
+  .shell-err {
+    color: #dc2626;
+    background: #fef2f2;
+    border-left: 3px solid #f87171;
+    padding: 6px 10px;
+    margin: 4px 0 8px;
+    display: block;
+  }
+
+  .control-bar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 16px;
+  }
+
+  .hint-box {
+    margin-top: 14px;
+    padding: 14px 16px;
+    border-radius: var(--radius-sm);
+    background: #fffbeb;
+    border: 1px solid #fde68a;
+    color: #92400e;
+    font-size: 0.92rem;
+  }
+
+  .feedback-box {
+    margin-top: 16px;
+    padding: 16px 18px;
+    border-radius: var(--radius-sm);
+    font-size: 0.94rem;
+    border: 1px solid transparent;
+  }
+
+  .feedback-success {
+    background: var(--success-bg);
+    border-color: #a7f3d0;
+    color: #065f46;
+  }
+
+  .feedback-error {
+    background: var(--error-bg);
+    border-color: #fecaca;
+    color: #991b1b;
+  }
+
+  .feedback-title {
+    font-weight: 800;
+    font-size: 1.02rem;
+    margin-bottom: 6px;
+  }
+
+  .task-footer-nav {
+    margin-top: 22px;
+    padding-top: 16px;
+    border-top: 1px solid var(--border-light);
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+  }
+
+  /* Theory Section */
+  .theory-layout {
+    display: grid;
+    grid-template-columns: 260px 1fr;
+    gap: 22px;
+    align-items: start;
+  }
+
+  @media (max-width: 860px) {
+    .theory-layout {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .theory-toc {
+    background: var(--bg-card);
+    border: 1px solid var(--border-light);
+    border-radius: var(--radius-md);
+    padding: 16px;
+    box-shadow: var(--shadow-md);
+    position: sticky;
+    top: 84px;
+  }
+
+  .theory-toc a {
+    display: block;
+    padding: 8px 12px;
+    border-radius: var(--radius-sm);
+    color: var(--text-secondary);
+    text-decoration: none;
+    font-size: 0.9rem;
+    font-weight: 600;
+    margin-bottom: 4px;
+    transition: all 0.16s;
+  }
+
+  .theory-toc a:hover {
+    background: #eff6ff;
+    color: var(--accent-blue);
+  }
+
+  .theory-content {
+    display: flex;
+    flex-direction: column;
+    gap: 22px;
+  }
+
+  .theory-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border-light);
+    border-radius: var(--radius-md);
+    padding: 26px;
+    box-shadow: var(--shadow-md);
+  }
+
+  .theory-card h2 {
+    font-size: 1.35rem;
+    color: var(--accent-blue);
+    margin-bottom: 14px;
+    padding-bottom: 8px;
+    border-bottom: 2px solid #e0f2fe;
+  }
+
+  .theory-card h3 {
+    font-size: 1.08rem;
+    color: var(--text-primary);
+    margin: 18px 0 8px;
+  }
+
+  .theory-card p {
+    margin-bottom: 10px;
+    color: var(--text-secondary);
+  }
+
+  .theory-card ul {
+    padding-left: 22px;
+    margin-bottom: 12px;
+    color: var(--text-secondary);
+  }
+
+  .theory-card li {
+    margin-bottom: 6px;
+  }
+
+  .code-example {
+    background: #f8fafc;
+    border: 1px solid #cbd5e1;
+    border-left: 4px solid var(--accent-blue);
+    border-radius: var(--radius-sm);
+    padding: 12px 14px;
+    font-family: var(--font-mono);
+    font-size: 0.9rem;
+    line-height: 1.5;
+    color: #0f172a;
+    overflow-x: auto;
+    margin: 10px 0 14px;
+    white-space: pre;
+  }
+
+  .code-comment {
+    color: #059669;
+  }
+
+  .index-diagram {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin: 14px 0;
+  }
+
+  .idx-cell {
+    border: 1.5px solid #93c5fd;
+    border-radius: 8px;
+    overflow: hidden;
+    text-align: center;
+    min-width: 72px;
+    background: #ffffff;
+  }
+
+  .idx-top {
+    background: #eff6ff;
+    font-family: var(--font-mono);
+    font-size: 0.78rem;
+    font-weight: 700;
+    color: var(--accent-blue);
+    padding: 3px 8px;
+    border-bottom: 1px solid #bfdbfe;
+  }
+
+  .idx-val {
+    font-family: var(--font-mono);
+    font-size: 0.98rem;
+    font-weight: 700;
+    padding: 8px;
+    color: var(--text-primary);
+  }
+
+  .mistake-item {
+    background: #fef2f2;
+    border: 1px solid #fecaca;
+    border-radius: var(--radius-sm);
+    padding: 12px 14px;
+    margin-bottom: 12px;
+  }
+
+  .mistake-item strong {
+    color: #b91c1c;
+    display: block;
+    margin-bottom: 4px;
+  }
+
+  /* Results Section */
+  .stats-cards-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(185px, 1fr));
+    gap: 16px;
+    margin-bottom: 24px;
+  }
+
+  .stat-box {
+    background: var(--bg-card);
+    border: 1px solid var(--border-light);
+    border-radius: var(--radius-md);
+    padding: 18px;
+    box-shadow: var(--shadow-sm);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .stat-box::after {
+    content: "";
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 3px;
+    background: var(--holo-border);
+  }
+
+  .stat-label {
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: var(--text-muted);
+    margin-bottom: 6px;
+  }
+
+  .stat-value {
+    font-size: 1.65rem;
+    font-weight: 800;
+    color: var(--text-primary);
+  }
+
+  .stat-sub {
+    font-size: 0.78rem;
+    color: var(--text-secondary);
+    margin-top: 4px;
+  }
+
+  .results-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border-light);
+    border-radius: var(--radius-md);
+    padding: 24px;
+    box-shadow: var(--shadow-md);
+  }
+
+  .table-responsive {
+    overflow-x: auto;
+    margin: 16px 0;
+  }
+
+  table.results-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.92rem;
+  }
+
+  table.results-table th,
+  table.results-table td {
+    padding: 12px 14px;
+    border-bottom: 1px solid var(--border-light);
+    text-align: left;
+  }
+
+  table.results-table th {
+    background: #f1f5f9;
+    font-weight: 700;
+    color: var(--text-primary);
+    white-space: nowrap;
+  }
+
+  table.results-table tr:hover td {
+    background: #f8fafc;
+  }
+
+  .status-pill {
+    display: inline-block;
+    padding: 3px 10px;
+    border-radius: 999px;
+    font-size: 0.8rem;
+    font-weight: 700;
+  }
+
+  .st-done { background: var(--success-bg); color: var(--success); }
+  .st-pending { background: #f1f5f9; color: #64748b; }
+
+  .formula-note {
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: var(--radius-sm);
+    padding: 12px 16px;
+    font-size: 0.86rem;
+    color: var(--text-secondary);
+    margin-top: 14px;
+  }
+
+  .report-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-top: 20px;
+  }
+
+  /* Print Styles for clean PDF saving */
+  @media print {
+    body {
+      background: #ffffff !important;
+      color: #000000 !important;
+    }
+    body::before,
+    .app-header,
+    .student-strip,
+    .storage-banner,
+    #section-practice,
+    #section-theory,
+    .report-actions,
+    .no-print {
+      display: none !important;
+    }
+    #app-main,
+    #section-results {
+      display: block !important;
+    }
+    .container {
+      max-width: 100%;
+      padding: 0;
+    }
+    .results-card, .stat-box {
+      box-shadow: none !important;
+      border: 1px solid #cbd5e1 !important;
+    }
+    .print-header-only {
+      display: block !important;
+      margin-bottom: 18px;
+      padding-bottom: 12px;
+      border-bottom: 2px solid #0f172a;
+    }
+  }
+
+  .print-header-only {
+    display: none;
+  }
+</style>
+</head>
+<body>
+
+<!-- ==================== SCREEN 1: STUDENT REGISTRATION ==================== -->
+<div id="screen-register" class="reg-wrapper">
+  <div class="reg-card">
+    <div class="lab-badge">LIST//LAB &bull; Інформатика 10 клас</div>
+    <h1 class="reg-title">Python Data Laboratory</h1>
+    <p class="reg-subtitle">Інтерактивний навчальний практикум з теми: <strong>«Обробка одномірних списків даних мовою програмування Python»</strong></p>
+
+    <form id="reg-form" novalidate>
+      <div class="form-group">
+        <label for="input-fullname">Прізвище та ім'я учня *</label>
+        <input type="text" id="input-fullname" class="form-control" placeholder="Наприклад: Коваленко Олександр" required>
+        <div id="err-fullname" class="error-hint">Будь ласка, введіть прізвище та ім'я (мінімум 3 символи).</div>
+      </div>
+
+      <div class="form-group">
+        <label for="input-class">Клас *</label>
+        <input type="text" id="input-class" class="form-control" placeholder="Наприклад: 10-А" required>
+        <div id="err-class" class="error-hint">Будь ласка, вкажіть ваш клас (наприклад, 10-А або 10-Б).</div>
+      </div>
+
+      <div class="form-group">
+        <label for="input-date">Дата виконання роботи</label>
+        <input type="date" id="input-date" class="form-control">
+      </div>
+
+      <button type="submit" class="btn btn-primary btn-full">Розпочати практикум &rarr;</button>
+    </form>
+
+    <div class="notice-box">
+      <strong>Зверніть увагу:</strong> ваші результати автоматично зберігаються локально у цьому браузері. Після завершення роботи завантажте підсумковий звіт та надішліть його вчителю самостійно.
+    </div>
+  </div>
+</div>
+
+<!-- ==================== SCREEN 2: MAIN LABORATORY ==================== -->
+<div id="app-main" class="hidden">
+  <header class="app-header">
+    <div class="header-inner">
+      <div class="brand-area">
+        <div class="brand-logo">[ ]</div>
+        <div class="brand-text">
+          <h1>LIST//LAB</h1>
+          <span>Python Data Laboratory &bull; 10 клас</span>
+        </div>
+      </div>
+
+      <nav class="nav-tabs" aria-label="Основна навігація">
+        <button class="nav-tab active" data-tab="practice" onclick="switchTab('practice')">1. Практикум (9)</button>
+        <button class="nav-tab" data-tab="theory" onclick="switchTab('theory')">2. Теоретичний довідник</button>
+        <button class="nav-tab" data-tab="results" onclick="switchTab('results')">3. Мої результати</button>
+      </nav>
+
+      <div>
+        <button class="btn btn-teal" onclick="downloadHTMLReport()" title="Завантажити звіт зі статистикою">
+          &#11015; Завантажити звіт
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Student & Progress Strip -->
+  <div class="student-strip">
+    <div class="strip-inner">
+      <div class="student-info-pills">
+        <div class="info-pill">Учень: <span class="val" id="hdr-name">—</span></div>
+        <div class="info-pill">Клас: <span class="val" id="hdr-class">—</span></div>
+        <div class="info-pill">Виконано: <span class="val" id="hdr-done">0 / 9</span></div>
+        <div class="info-pill">Бали: <span class="val" id="hdr-score">0 / 108</span></div>
+      </div>
+      <div class="progress-mini">
+        <span style="font-weight: 600; color: var(--text-secondary);">Прогрес: <strong id="hdr-pct">0%</strong></span>
+        <div class="progress-track">
+          <div class="progress-fill" id="hdr-progress-bar"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <main class="container">
+    <div class="storage-banner">
+      <span>&#128190; Прогрес зберігається автоматично у пам'яті браузера (<strong>localStorage</strong>). Результати не передаються вчителю автоматично — після виконання завантажте звіт та надішліть його вчителю.</span>
+      <button class="btn btn-secondary" style="padding: 5px 12px; font-size: 0.8rem;" onclick="resetAllProgress()">Скинути прогрес / Змінити учня</button>
+    </div>
+
+    <!-- ==================== TAB 1: PRACTICE ==================== -->
+    <section id="section-practice">
+      <div class="practice-grid">
+        <!-- Left Sidebar: 9 Tasks -->
+        <aside class="task-sidebar">
+          <div class="sidebar-header">Навігація за завданнями</div>
+
+          <div class="level-group-label">Рівень 1 &bull; Початковий</div>
+          <div id="nav-level-1"></div>
+
+          <div class="level-group-label">Рівень 2 &bull; Середній</div>
+          <div id="nav-level-2"></div>
+
+          <div class="level-group-label">Рівень 3 &bull; Високий</div>
+          <div id="nav-level-3"></div>
+        </aside>
+
+        <!-- Right Workspace: Active Task -->
+        <div class="task-workspace">
+          <div class="task-top-meta">
+            <span id="task-level-badge" class="level-pill level-1">Рівень 1. Початковий</span>
+            <div class="task-metrics-bar">
+              <span class="metric-chip">Спроб: <strong id="m-attempts">0</strong></span>
+              <span class="metric-chip">Помилок: <strong id="m-errors">0</strong></span>
+              <span class="metric-chip">Час: <strong id="m-time">00:00</strong></span>
+              <span class="metric-chip" style="background:#eff6ff; color:#1d4ed8;">Бали: <strong id="m-score">0 / 12</strong></span>
+            </div>
+          </div>
+
+          <h2 class="task-title" id="task-title">Завдання 1</h2>
+
+          <div class="task-block">
+            <h4>Умова завдання</h4>
+            <div id="task-condition"></div>
+          </div>
+
+          <div class="task-block">
+            <h4>Пояснення та порядок виконання</h4>
+            <div id="task-explanation"></div>
+          </div>
+
+          <div class="task-block goal-box">
+            <h4>Навчальна мета</h4>
+            <p id="task-goal"></p>
+          </div>
+
+          <!-- Vertical IDLE Editor + Python Shell -->
+          <div class="ide-section">
+            <!-- 3. Code Editor -->
+            <div class="idle-window">
+              <div class="idle-titlebar">
+                <div class="idle-dots">
+                  <span class="idle-dot dot-r"></span>
+                  <span class="idle-dot dot-y"></span>
+                  <span class="idle-dot dot-g"></span>
+                  <span style="margin-left:6px;">task_<span id="editor-file-num">1</span>.py — Python IDLE Editor</span>
+                </div>
+                <span style="font-size:0.76rem; color:#64748b;">UTF-8 &bull; Tab = 4 пробіли</span>
+              </div>
+              <div class="editor-wrap">
+                <div class="line-numbers" id="line-numbers">1</div>
+                <textarea id="code-editor" class="code-textarea" spellcheck="false" autocomplete="off" autocorrect="off" autocapitalize="off"></textarea>
+              </div>
+            </div>
+
+            <!-- 4. Python Shell Console -->
+            <div class="shell-window">
+              <div class="shell-header">
+                <span>Python 3.12 Shell (Навчальний інтерпретатор списків)</span>
+                <span class="sim-badge">Навчальна симуляція Python Runtime</span>
+              </div>
+              <div class="shell-body" id="python-shell"></div>
+            </div>
+          </div>
+
+          <!-- 5. Control Buttons -->
+          <div class="control-bar">
+            <button class="btn btn-secondary" onclick="runCurrentTaskCode()">&#9654; Запустити код</button>
+            <button class="btn btn-primary" onclick="checkCurrentTask()">&#10004; Перевірити</button>
+            <button class="btn btn-warning" onclick="toggleHint()">&#128161; Підказка</button>
+            <button class="btn btn-secondary" onclick="restoreInitialCode()">&#8634; Відновити початковий код</button>
+          </div>
+
+          <!-- Hint Area -->
+          <div id="task-hint-box" class="hint-box hidden"></div>
+
+          <!-- 6. Check Feedback -->
+          <div id="task-feedback-box" class="feedback-box hidden"></div>
+
+          <!-- Prev / Next Navigation -->
+          <div class="task-footer-nav">
+            <button class="btn btn-secondary" id="btn-prev-task" onclick="navigateTask(-1)">&larr; Попереднє завдання</button>
+            <button class="btn btn-secondary" id="btn-next-task" onclick="navigateTask(1)">Наступне завдання &rarr;</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== TAB 2: THEORY HANDBOOK ==================== -->
+    <section id="section-theory" class="hidden">
+      <div class="theory-layout">
+        <aside class="theory-toc">
+          <div class="sidebar-header">Зміст довідника</div>
+          <a href="#th-6-1">6.1. Поняття списку та індекси</a>
+          <a href="#th-6-2">6.2. Основні операції та методи</a>
+          <a href="#th-6-3">6.3. Обробка списків у циклах</a>
+          <a href="#th-6-4">6.4. Типові помилки учнів</a>
+        </aside>
+
+        <div class="theory-content">
+          <!-- 6.1 -->
+          <article id="th-6-1" class="theory-card">
+            <h2>6.1. Поняття списку в Python</h2>
+            <p><strong>Список (list)</strong> — це впорядкована змінна структура даних у мові програмування Python, яка дозволяє зберігати цілу колекцію значень під одним іменем.</p>
+            <ul>
+              <li><strong>Для чого використовують списки:</strong> для зберігання однотипних або пов'язаних даних — наприклад, оцінок учня за семестр, показників температури за тиждень, цін товарів у кошику чи списку учасників олімпіади.</li>
+              <li><strong>Чим список відрізняється від звичайної змінної:</strong> звичайна змінна зберігає лише одне значення (наприклад, <code>mark = 11</code>), тоді як список зберігає багато елементів одночасно у квадратних дужках <code>[ ]</code>, розділених комами.</li>
+              <li><strong>Нумерація індексів із нуля:</strong> кожен елемент списку має свій порядковий номер — <strong>індекс</strong>. Перший елемент завжди має індекс <code>0</code>, другий — <code>1</code>, третій — <code>2</code> і так далі.</li>
+            </ul>
+
+            <div class="index-diagram" aria-label="Схема індексації списку">
+              <div class="idx-cell"><div class="idx-top">індекс 0</div><div class="idx-val">18</div></div>
+              <div class="idx-cell"><div class="idx-top">індекс 1</div><div class="idx-val">20</div></div>
+              <div class="idx-cell"><div class="idx-top">індекс 2</div><div class="idx-val">23</div></div>
+              <div class="idx-cell"><div class="idx-top">індекс 3</div><div class="idx-val">19</div></div>
+              <div class="idx-cell"><div class="idx-top">індекс 4</div><div class="idx-val">21</div></div>
+            </div>
+
+            <div class="code-example"><span class="code-comment"># Створення списку температур за 5 днів</span>
+temperatures = [18, 20, 23, 19, 21]
+
+<span class="code-comment"># Створення порожнього списку</span>
+empty_list = []
+
+<span class="code-comment"># Звернення до елементів за індексом</span>
+print(temperatures[0])   <span class="code-comment"># Виведе 18 (перший елемент)</span>
+print(temperatures[2])   <span class="code-comment"># Виведе 23 (третій елемент)</span>
+print(temperatures[-1])  <span class="code-comment"># Виведе 21 (останній елемент)</span></div>
+          </article>
+
+          <!-- 6.2 -->
+          <article id="th-6-2" class="theory-card">
+            <h2>6.2. Основні операції зі списками</h2>
+            <p>Оскільки списки в Python є <strong>змінними (mutable)</strong>, їх можна доповнювати, редагувати та скорочувати під час виконання програми.</p>
+
+            <h3>Довжина, додавання, вставлення та видалення елементів</h3>
+            <div class="code-example">marks = [9, 10, 11]
+
+<span class="code-comment"># 1. Отримання кількості елементів (довжини списку)</span>
+print(len(marks))        <span class="code-comment"># Виведе 3</span>
+
+<span class="code-comment"># 2. Додавання елемента в кінець списку — append()</span>
+marks.append(12)         <span class="code-comment"># Тепер marks = [9, 10, 11, 12]</span>
+
+<span class="code-comment"># 3. Вставлення елемента на вказану позицію — insert(індекс, значення)</span>
+marks.insert(1, 8)       <span class="code-comment"># На позицію 1 вставляємо 8: [9, 8, 10, 11, 12]</span>
+
+<span class="code-comment"># 4. Зміна значення існуючого елемента за індексом</span>
+marks[0] = 10            <span class="code-comment"># Замінюємо перший елемент: [10, 8, 10, 11, 12]</span>
+
+<span class="code-comment"># 5. Видалення елемента за значенням — remove()</span>
+marks.remove(8)          <span class="code-comment"># Видаляє першу знайдену вісімку: [10, 10, 11, 12]</span>
+
+<span class="code-comment"># 6. Видалення елемента за індексом (або останнього) — pop()</span>
+last = marks.pop()       <span class="code-comment"># Видаляє та повертає 12; marks = [10, 10, 11]</span></div>
+
+            <h3>Об'єднання списків та перевірка належності елемента</h3>
+            <div class="code-example">group_a = ["Олена", "Максим"]
+group_b = ["Ірина", "Тарас"]
+
+<span class="code-comment"># Об'єднання двох списків оператором +</span>
+all_students = group_a + group_b
+print(all_students)      <span class="code-comment"># ['Олена', 'Максим', 'Ірина', 'Тарас']</span>
+
+<span class="code-comment"># Перевірка належності елемента списку оператором in</span>
+if "Максим" in all_students:
+    print("Учень є у списку!")</div>
+          </article>
+
+          <!-- 6.3 -->
+          <article id="th-6-3" class="theory-card">
+            <h2>6.3. Обробка списків</h2>
+            <p>Для опрацювання кожного елемента списку використовують цикли, вбудовані функції та розгалуження.</p>
+
+            <h3>1. Перебирання елементів списку (за значенням та за індексами)</h3>
+            <div class="code-example">prices = [120, 85, 240, 150]
+
+<span class="code-comment"># Спосіб А: Перебирання безпосередньо елементів</span>
+for price in prices:
+    print(price)
+
+<span class="code-comment"># Спосіб Б: Перебирання за індексами через range(len(...))</span>
+for i in range(len(prices)):
+    print("Товар", i, "коштує", prices[i])</div>
+
+            <h3>2. Сума, максимум, мінімум та середнє арифметичне</h3>
+            <div class="code-example">scores = [10, 12, 8, 11, 9]
+
+total = sum(scores)              <span class="code-comment"># Сума всіх елементів = 50</span>
+best = max(scores)               <span class="code-comment"># Найбільше значення = 12</span>
+worst = min(scores)              <span class="code-comment"># Найменше значення = 8</span>
+average = sum(scores) / len(scores)  <span class="code-comment"># Середнє арифметичне = 10.0</span>
+
+print("Середній бал:", average)</div>
+
+            <h3>3. Підрахунок за умовою та формування нового списку (фільтрування)</h3>
+            <div class="code-example">numbers = [-5, 12, 0, 8, -3, 19, 4]
+
+<span class="code-comment"># Підрахунок кількості додатних чисел за допомогою лічильника</span>
+count_pos = 0
+for x in numbers:
+    if x > 0:
+        count_pos += 1
+print("Кількість додатних:", count_pos)   <span class="code-comment"># Виведе 4</span>
+
+<span class="code-comment"># Формування нового списку з парних чисел</span>
+even_numbers = []                        <span class="code-comment"># Крок 1: створюємо порожній список</span>
+for x in numbers:                        <span class="code-comment"># Крок 2: перебираємо елементи</span>
+    if x % 2 == 0:                       <span class="code-comment"># Крок 3: перевіряємо умову парності</span>
+        even_numbers.append(x)           <span class="code-comment"># Крок 4: додаємо у новий список</span>
+print("Парні числа:", even_numbers)      <span class="code-comment"># [12, 0, 8, 4]</span></div>
+          </article>
+
+          <!-- 6.4 -->
+          <article id="th-6-4" class="theory-card">
+            <h2>6.4. Типові помилки під час роботи зі списками</h2>
+
+            <div class="mistake-item">
+              <strong>1. Неправильне використання індексів (плутанина між 1-м та 0-м елементом)</strong>
+              Учні часто пишуть <code>nums[1]</code>, щоб отримати перший елемент, хоча перший елемент має індекс <code>nums[0]</code>.
+            </div>
+
+            <div class="mistake-item">
+              <strong>2. Вихід за межі списку (IndexError: list index out of range)</strong>
+              Якщо у списку 5 елементів, то їхні індекси: <code>0, 1, 2, 3, 4</code>. Звернення до <code>nums[5]</code> спричинить помилку виходу за межі діапазону.
+            </div>
+
+            <div class="mistake-item">
+              <strong>3. Неправильні відступи (IndentationError)</strong>
+              Тіло циклу <code>for</code> та блоку <code>if</code> у Python обов'язково виділяється відступом у 4 пробіли. Якщо рядок <code>print(...)</code> чи <code>result.append(...)</code> записано без відступу, він виконається лише один раз після циклу, а не для кожного елемента.
+            </div>
+
+            <div class="mistake-item">
+              <strong>4. Помилки в назвах змінних (NameError)</strong>
+              Звернення до змінної <code>number</code> замість оголошеного списку <code>numbers</code> або використання змінної циклу з іншою назвою.
+            </div>
+
+            <div class="mistake-item">
+              <strong>5. Неправильне використання циклу for</strong>
+              Написання <code>for x in len(nums):</code> замість <code>for x in nums:</code> або <code>for i in range(len(nums)):</code>. Число не можна перебирати без <code>range()</code>.
+            </div>
+
+            <div class="mistake-item">
+              <strong>6. Помилки під час роботи з умовами</strong>
+              Використання одного знака присвоєння <code>=</code> замість порівняння <code>==</code> (наприклад, <code>if x % 2 = 0:</code> замість <code>if x % 2 == 0:</code>) або пропуск двокрапки <code>:</code> наприкінці заголовка.
+            </div>
+
+            <div class="mistake-item">
+              <strong>7. Неправильне застосування методів списків</strong>
+              Метод <code>append()</code> змінює список на місці і повертає <code>None</code>. Не можна писати <code>nums = nums.append(5)</code> — правильно писати просто <code>nums.append(5)</code>.
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== TAB 3: MY RESULTS ==================== -->
+    <section id="section-results" class="hidden">
+      <div class="print-header-only">
+        <h2>LIST//LAB — Звіт про виконання навчального практикуму</h2>
+        <p><strong>Учень:</strong> <span id="pr-name"></span> | <strong>Клас:</strong> <span id="pr-class"></span> | <strong>Дата:</strong> <span id="pr-date"></span></p>
+      </div>
+
+      <div class="stats-cards-grid">
+        <div class="stat-box">
+          <div class="stat-label">Виконано завдань</div>
+          <div class="stat-value" id="st-completed">0 / 9</div>
+          <div class="stat-sub" id="st-percent">Прогрес: 0%</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-label">Сума набраних балів</div>
+          <div class="stat-value" id="st-total-score">0 / 108</div>
+          <div class="stat-sub">Максимум 12 б. за завдання</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-label">Переведена оцінка (12-б.)</div>
+          <div class="stat-value" id="st-grade-12">0 б.</div>
+          <div class="stat-sub">Формула: round((бали / 108) &times; 12)</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-label">Спроби / Помилки</div>
+          <div class="stat-value"><span id="st-attempts">0</span> / <span id="st-errors">0</span></div>
+          <div class="stat-sub" id="st-avg-attempts">Середнє спроб на завд.: 0.0</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-label">Загальний час роботи</div>
+          <div class="stat-value" id="st-total-time">00:00</div>
+          <div class="stat-sub">Чистий час у завданнях</div>
+        </div>
+      </div>
+
+      <div class="results-card">
+        <div style="display:flex; flex-wrap:wrap; justify-content:space-between; align-items:center; gap:10px;">
+          <h3 style="font-size:1.2rem;">Детальна таблиця результатів за завданнями</h3>
+          <span style="font-size:0.86rem; color:var(--text-secondary);">Учень: <strong id="res-student-label">—</strong></span>
+        </div>
+
+        <div class="table-responsive">
+          <table class="results-table">
+            <thead>
+              <tr>
+                <th>№</th>
+                <th>Назва завдання</th>
+                <th>Статус</th>
+                <th>Спроби</th>
+                <th>Помилки</th>
+                <th>Бали</th>
+                <th>Час</th>
+              </tr>
+            </thead>
+            <tbody id="results-tbody"></tbody>
+          </table>
+        </div>
+
+        <div class="formula-note">
+          <strong>Система оцінювання:</strong> за кожне завдання нараховується до 12 балів (1-ша успішна спроба — 12 б., 2-га — 10 б., 3-тя — 8 б., 4-та — 6 б., 5-та і далі — 4 б.; невиконане — 0 б.). Максимальна сума за 9 завдань становить <strong>108 балів</strong>. Підсумкова оцінка за 12-бальною шкалою обчислюється за формулою: <code>round((Сума_балів / 108) * 12)</code>.
+        </div>
+
+        <div class="report-actions no-print">
+          <button class="btn btn-primary" onclick="downloadHTMLReport()">&#11015; Завантажити звіт (HTML)</button>
+          <button class="btn btn-teal" onclick="printPDFReport()">&#128424; Друкувати / Зберегти як PDF</button>
+        </div>
+      </div>
+    </section>
+  </main>
+</div>
+
+<script>
+// ==================== 1. TASK DEFINITIONS (9 TASKS, 3 LEVELS) ====================
+const TASKS = [
+  {
+    id: 1,
+    level: 1,
+    levelName: "Рівень 1. Початковий",
+    title: "Завдання 1. Знайомство зі списком",
+    condition: `<p>Дано список денних температур повітря за п'ять днів тижня:</p>
+<pre class="code-example" style="margin:8px 0;">temperatures = [18, 20, 23, 19, 21]
+print(temperatures[2])</pre>
+<p>Дослідіть початковий код та змініть звернення до списку так, щоб програма вивела <strong>перший</strong> елемент списку (значення <code>18</code>), або виведіть одночасно елемент із індексом <code>2</code> та перший елемент.</p>
+<p><em>Примітка для перевірки:</em> запишіть у коді виведення першого елемента <code>print(temperatures[0])</code> (можна залишити й <code>print(temperatures[2])</code>).</p>`,
+    explanation: `<p>У мові Python нумерація елементів списку завжди починається з <strong>нуля (0)</strong>:</p>
+<ul>
+  <li><code>temperatures[0]</code> &rarr; <code>18</code> (перший елемент);</li>
+  <li><code>temperatures[1]</code> &rarr; <code>20</code> (другий елемент);</li>
+  <li><code>temperatures[2]</code> &rarr; <code>23</code> (третій елемент).</li>
+</ul>
+<p>У редакторі нижче виправте індекс або додайте рядок <code>print(temperatures[0])</code>, натисніть <strong>«Запустити код»</strong>, а потім <strong>«Перевірити»</strong>.</p>`,
+    goal: "Навчитися створювати одномірні списки, розуміти нумерацію елементів з нуля та звертатися до потрібного елемента за індексом.",
+    initialCode: `temperatures = [18, 20, 23, 19, 21]\nprint(temperatures[2])`,
+    hint: "Перший елемент списку має індекс 0, а не 1. Використайте звернення temperatures[0] усередині функції print().",
+    validate: (code, execResult) => {
+      if (execResult.error) {
+        return { ok: false, msg: "У програмі виникла синтаксична помилка або помилка виконання: " + execResult.error };
+      }
+      if (!/temperatures\s*=\s*\[\s*18\s*,\s*20\s*,\s*23\s*,\s*19\s*,\s*21\s*\]/.test(code)) {
+        return { ok: false, msg: "Не змінюйте початковий список temperatures = [18, 20, 23, 19, 21]." };
+      }
+      if (!/temperatures\s*\[\s*0\s*\]/.test(code)) {
+        return { ok: false, msg: "У коді не знайдено звернення до першого елемента списку за індексом 0: temperatures[0]." };
+      }
+      if (!execResult.outputs.includes("18")) {
+        return { ok: false, msg: "Програма не вивела значення першого елемента (18) у консоль." };
+      }
+      return { ok: true, msg: "Чудово! Ви правильно використали індекс 0 та отримали перший елемент списку (18)." };
+    }
+  },
+  {
+    id: 2,
+    level: 1,
+    levelName: "Рівень 1. Початковий",
+    title: "Завдання 2. Кількість елементів",
+    condition: `<p>Дано список кількості проданих товарів за кожен день тижня:</p>
+<pre class="code-example" style="margin:8px 0;">sales = [14, 22, 19, 31, 27, 15, 29]</pre>
+<p>Використайте вбудовану функцію <code>len()</code>, щоб визначити та вивести на екран кількість елементів у списку <code>sales</code>.</p>`,
+    explanation: `<p>Функція <code>len(назва_списку)</code> повертає ціле число — кількість елементів у списку.</p>
+<ul>
+  <li>Передайте список <code>sales</code> як аргумент у функцію <code>len(sales)</code>.</li>
+  <li>Виведіть результат за допомогою функції <code>print(...)</code>.</li>
+</ul>`,
+    goal: "Засвоїти використання функції len() для визначення довжини (кількості елементів) одномірного списку.",
+    initialCode: `sales = [14, 22, 19, 31, 27, 15, 29]\n# Виведіть кількість елементів списку sales за допомогою len()\n`,
+    hint: "Викличте print(len(sales)) — функція len() порахує кількість чисел у списку sales (їх 7).",
+    validate: (code, execResult) => {
+      if (execResult.error) {
+        return { ok: false, msg: "Помилка виконання: " + execResult.error };
+      }
+      if (!/len\s*\(\s*sales\s*\)/.test(code)) {
+        return { ok: false, msg: "Для визначення кількості елементів обов'язково використайте конструкцію len(sales)." };
+      }
+      if (!execResult.outputs.includes("7")) {
+        return { ok: false, msg: "У консолі має з'явитися число 7 (кількість елементів списку sales). Перевірте наявність print()." };
+      }
+      return { ok: true, msg: "Правильно! Функція len(sales) повернула 7 — саме стільки елементів містить список." };
+    }
+  },
+  {
+    id: 3,
+    level: 1,
+    levelName: "Рівень 1. Початковий",
+    title: "Завдання 3. Сума значень",
+    condition: `<p>Дано список щоденних витрат учня на транспорт і обіди (у гривнях):</p>
+<pre class="code-example" style="margin:8px 0;">expenses = [45, 80, 60, 95, 50]</pre>
+<p>Обчисліть та виведіть на екран загальну суму всіх витрат за допомогою функції <code>sum()</code>.</p>`,
+    explanation: `<p>Вбудована функція <code>sum(список)</code> автоматично додає всі числові елементи списку.</p>
+<ul>
+  <li>Ви можете зберегти суму у змінну (наприклад, <code>total = sum(expenses)</code>) і вивести її або одразу написати <code>print(sum(expenses))</code>.</li>
+  <li>Очікуваний результат у консолі: <code>330</code>.</li>
+</ul>`,
+    goal: "Навчитися обчислювати суму числових елементів списку за допомогою функції sum().",
+    initialCode: `expenses = [45, 80, 60, 95, 50]\n# Обчисліть та виведіть суму елементів списку expenses\n`,
+    hint: "Використайте функцію sum(expenses) та виведіть її значення функцією print().",
+    validate: (code, execResult) => {
+      if (execResult.error) {
+        return { ok: false, msg: "Помилка виконання: " + execResult.error };
+      }
+      if (!/sum\s*\(\s*expenses\s*\)/.test(code)) {
+        return { ok: false, msg: "Використайте вбудовану функцію sum(expenses) для обчислення суми." };
+      }
+      if (!execResult.outputs.includes("330")) {
+        return { ok: false, msg: "Очікуване значення суми — 330. Переконайтеся, що результат виводиться за допомогою print()." };
+      }
+      return { ok: true, msg: "Відмінно! Сума всіх витрат становить 330 грн, і ви коректно обчислили її через sum()." };
+    }
+  },
+  {
+    id: 4,
+    level: 2,
+    levelName: "Рівень 2. Середній",
+    title: "Завдання 4. Перебирання списку",
+    condition: `<p>Дано список імен учасників шкільної команди з програмування:</p>
+<pre class="code-example" style="margin:8px 0;">students = ["Анна", "Богдан", "Вікторія", "Дмитро"]</pre>
+<p>Використайте цикл <code>for</code>, щоб вивести кожне ім'я з нового рядка.</p>`,
+    explanation: `<p>Цикл <code>for</code> дозволяє послідовно перебрати всі елементи списку без ручного вказування індексів:</p>
+<pre class="code-example" style="margin:8px 0;">for name in students:
+    print(name)</pre>
+<ul>
+  <li>Не забудьте поставити двокрапку <code>:</code> після назви списку.</li>
+  <li>Рядок <code>print(name)</code> всередині циклу повинен мати відступ у 4 пробіли.</li>
+</ul>`,
+    goal: "Опанувати послідовне перебирання елементів списку за допомогою оператора циклу for та правил відступів у Python.",
+    initialCode: `students = ["Анна", "Богдан", "Вікторія", "Дмитро"]\n# Напишіть цикл for для виведення кожного імені\n`,
+    hint: "Напишіть: for name in students: та на наступному рядку з відступом 4 пробіли викличте print(name).",
+    validate: (code, execResult) => {
+      if (execResult.error) {
+        return { ok: false, msg: "Помилка виконання: " + execResult.error };
+      }
+      if (!/for\s+[a-zA-Z_]\w*\s+in\s+(students|range\s*\(\s*len\s*\(\s*students\s*\)\s*\))\s*:/.test(code)) {
+        return { ok: false, msg: "Не знайдено коректного заголовка циклу for для списку students." };
+      }
+      const expected = ["Анна", "Богдан", "Вікторія", "Дмитро"];
+      const allPresent = expected.every(n => execResult.outputs.includes(n));
+      if (!allPresent || execResult.outputs.length < 4) {
+        return { ok: false, msg: "У консолі мають бути виведені всі 4 імені з нового рядка: Анна, Богдан, Вікторія, Дмитро." };
+      }
+      return { ok: true, msg: "Чудова робота! Цикл for послідовно перебрав список і вивів кожне ім'я з нового рядка." };
+    }
+  },
+  {
+    id: 5,
+    level: 2,
+    levelName: "Рівень 2. Середній",
+    title: "Завдання 5. Пошук найбільшого значення",
+    condition: `<p>Дано список балів учня за практичні роботи з інформатики:</p>
+<pre class="code-example" style="margin:8px 0;">grades = [8, 11, 9, 12, 10, 7]</pre>
+<p>Знайдіть та виведіть на екран найбільшу оцінку зі списку за допомогою функції <code>max()</code>.</p>`,
+    explanation: `<p>Вбудована функція <code>max(список)</code> знаходить максимальний (найбільший) елемент у колекції.</p>
+<ul>
+  <li>Застосуйте функцію <code>max(grades)</code>.</li>
+  <li>Виведіть знайдене значення функцією <code>print()</code>.</li>
+  <li>Очікуваний результат у консолі: <code>12</code>.</li>
+</ul>`,
+    goal: "Навчитися знаходити максимальне значення в наборі числових даних за допомогою функції max().",
+    initialCode: `grades = [8, 11, 9, 12, 10, 7]\n# Знайдіть та виведіть найбільшу оцінку за допомогою max()\n`,
+    hint: "Використайте вираз max(grades) всередині print(), наприклад: print(max(grades)).",
+    validate: (code, execResult) => {
+      if (execResult.error) {
+        return { ok: false, msg: "Помилка виконання: " + execResult.error };
+      }
+      if (!/max\s*\(\s*grades\s*\)/.test(code)) {
+        return { ok: false, msg: "Для пошуку найбільшого елемента використайте функцію max(grades)." };
+      }
+      if (!execResult.outputs.includes("12")) {
+        return { ok: false, msg: "Програма повинна вивести найбільшу оцінку — 12." };
+      }
+      return { ok: true, msg: "Правильно! Найвища оцінка у списку — 12 балів, знайдено за допомогою max(grades)." };
+    }
+  },
+  {
+    id: 6,
+    level: 2,
+    levelName: "Рівень 2. Середній",
+    title: "Завдання 6. Відбір парних чисел",
+    condition: `<p>Дано список результатів вимірювань:</p>
+<pre class="code-example" style="margin:8px 0;">numbers = [15, 24, 7, 30, 12, 9, 42]</pre>
+<p>Переберіть список за допомогою циклу <code>for</code> та виведіть на екран <strong>лише парні числа</strong>, використавши умову перевірки парності: <code>x % 2 == 0</code>.</p>`,
+    explanation: `<p>Число є парним, якщо остача від його ділення на 2 дорівнює нулю (<code>x % 2 == 0</code>).</p>
+<ul>
+  <li>Запустіть цикл <code>for x in numbers:</code>.</li>
+  <li>Усередині циклу (відступ 4 пробіли) запишіть розгалуження <code>if x % 2 == 0:</code>.</li>
+  <li>Усередині умови (відступ 8 пробілів) виведіть число: <code>print(x)</code>.</li>
+</ul>`,
+    goal: "Навчитися поєднувати цикл for з умовним оператором if та операцією остачі від ділення % для фільтрації даних.",
+    initialCode: `numbers = [15, 24, 7, 30, 12, 9, 42]\n# Переберіть список і виведіть лише парні числа\n`,
+    hint: "Перевірте умову if x % 2 == 0: всередині циклу for x in numbers: і виведіть x з подвійним відступом (8 пробілів).",
+    validate: (code, execResult) => {
+      if (execResult.error) {
+        return { ok: false, msg: "Помилка виконання: " + execResult.error };
+      }
+      if (!/for\s+[a-zA-Z_]\w*\s+in\s+numbers\s*:/.test(code)) {
+        return { ok: false, msg: "Використайте цикл for для перебирання списку numbers." };
+      }
+      if (!/if\s+[a-zA-Z_]\w*\s*%\s*2\s*==\s*0\s*:/.test(code)) {
+        return { ok: false, msg: "Обов'язково використайте умову перевірки парності: if x % 2 == 0:" };
+      }
+      const expected = ["24", "30", "12", "42"];
+      const forbidden = ["15", "7", "9"];
+      const hasAll = expected.every(v => execResult.outputs.includes(v));
+      const hasOdd = forbidden.some(v => execResult.outputs.includes(v));
+      if (!hasAll || hasOdd) {
+        return { ok: false, msg: "У консолі повинні бути виведені тільки парні числа: 24, 30, 12, 42." };
+      }
+      return { ok: true, msg: "Чудово! Ви відфільтрували та вивели всі парні числа (24, 30, 12, 42)." };
+    }
+  },
+  {
+    id: 7,
+    level: 3,
+    levelName: "Рівень 3. Високий",
+    title: "Завдання 7. Формування нового списку",
+    condition: `<p>Дано список змін температури вночі та вдень (додатні й від'ємні значення):</p>
+<pre class="code-example" style="margin:8px 0;">temps = [-4, 12, -1, 8, 0, 15, -6, 9]</pre>
+<p>Сформуйте новий список <code>positive</code>, до якого потраплять <strong>лише додатні числа</strong> (більші за 0), та виведіть його на екран.</p>
+<p><strong>Обов'язкові вимоги:</strong> використати порожній список <code>positive = []</code>, цикл <code>for</code>, умову <code>if</code> та метод <code>append()</code>.</p>`,
+    explanation: `<p>Алгоритм створення нового списку за умовою складається з 4 кроків:</p>
+<ol style="padding-left:20px;">
+  <li>Створіть порожній список: <code>positive = []</code>.</li>
+  <li>Переберіть елементи початкового списку: <code>for t in temps:</code>.</li>
+  <li>Перевірте, чи є число додатним: <code>if t > 0:</code>.</li>
+  <li>Додайте підходящий елемент у новий список: <code>positive.append(t)</code>.</li>
+</ol>
+<p>Після завершення циклу (без відступу) виведіть новий список: <code>print(positive)</code>.</p>`,
+    goal: "Опанувати класичний алгоритм формування нового списку на основі фільтрації вхідних даних з використанням методу append().",
+    initialCode: `temps = [-4, 12, -1, 8, 0, 15, -6, 9]\npositive = []\n# Допишіть цикл for, умову if та метод append()\n\nprint(positive)`,
+    hint: "У циклі for t in temps: перевірте if t > 0: та викличте positive.append(t). Зверніть увагу, що 0 не є додатним числом.",
+    validate: (code, execResult) => {
+      if (execResult.error) {
+        return { ok: false, msg: "Помилка виконання: " + execResult.error };
+      }
+      if (!/positive\s*=\s*\[\s*\]/.test(code)) {
+        return { ok: false, msg: "Спочатку створіть порожній список positive = []." };
+      }
+      if (!/for\s+[a-zA-Z_]\w*\s+in\s+temps\s*:/.test(code)) {
+        return { ok: false, msg: "Використайте цикл for для перебирання списку temps." };
+      }
+      if (!/if\s+[a-zA-Z_]\w*\s*>\s*0\s*:/.test(code)) {
+        return { ok: false, msg: "Додайте умову відбору додатних чисел: if t > 0:" };
+      }
+      if (!/positive\.append\s*\(/.test(code)) {
+        return { ok: false, msg: "Для додавання елемента до нового списку використайте метод positive.append(...)." };
+      }
+      const joined = execResult.outputs.join(" ");
+      if (!joined.includes("[12, 8, 15, 9]")) {
+        return { ok: false, msg: "У консолі має бути виведений сформований список [12, 8, 15, 9]." };
+      }
+      return { ok: true, msg: "Блискуче! Новий список [12, 8, 15, 9] успішно сформовано за допомогою циклу, умови та append()." };
+    }
+  },
+  {
+    id: 8,
+    level: 3,
+    levelName: "Рівень 3. Високий",
+    title: "Завдання 8. Обчислення середнього арифметичного",
+    condition: `<p>Дано список результатів тестування (у балах):</p>
+<pre class="code-example" style="margin:8px 0;">scores = [10, 12, 8, 11, 9, 10]</pre>
+<p>Обчисліть та виведіть на екран <strong>середнє арифметичне</strong> всіх значень списку, використовуючи функції <code>sum()</code> та <code>len()</code>.</p>`,
+    explanation: `<p>Середнє арифметичне дорівнює відношенню суми всіх елементів до їхньої кількості:</p>
+<pre class="code-example" style="margin:8px 0;">avg = sum(scores) / len(scores)
+print(avg)</pre>
+<ul>
+  <li>Сума елементів <code>sum(scores)</code> дорівнює <code>60</code>.</li>
+  <li>Кількість елементів <code>len(scores)</code> дорівнює <code>6</code>.</li>
+  <li>Результат ділення: <code>10.0</code> (або <code>10</code>).</li>
+</ul>`,
+    goal: "Навчитися комбінувати агрегатні функції sum() та len() для обчислення статистичних показників вибірки.",
+    initialCode: `scores = [10, 12, 8, 11, 9, 10]\n# Обчисліть середнє арифметичне за допомогою sum() та len()\n`,
+    hint: "Поділіть суму елементів на їх кількість: avg = sum(scores) / len(scores) та виведіть значення avg.",
+    validate: (code, execResult) => {
+      if (execResult.error) {
+        return { ok: false, msg: "Помилка виконання: " + execResult.error };
+      }
+      if (!/sum\s*\(\s*scores\s*\)/.test(code) || !/len\s*\(\s*scores\s*\)/.test(code)) {
+        return { ok: false, msg: "Обов'язково використайте обидві функції: sum(scores) та len(scores)." };
+      }
+      if (!/\//.test(code)) {
+        return { ok: false, msg: "Використайте оператор ділення / між sum(scores) та len(scores)." };
+      }
+      const hasTen = execResult.outputs.some(o => o.includes("10.0") || o.trim() === "10");
+      if (!hasTen) {
+        return { ok: false, msg: "Очікуваний результат обчислення середнього арифметичного — 10.0. Виведіть його через print()." };
+      }
+      return { ok: true, msg: "Чудово! Середній бал обчислено правильно: 60 / 6 = 10.0." };
+    }
+  },
+  {
+    id: 9,
+    level: 3,
+    levelName: "Рівень 3. Високий",
+    title: "Завдання 9. Мініпроєкт «Аналіз даних»",
+    condition: `<p>Під час лабораторного експерименту отримано список показників датчика тиску:</p>
+<pre class="code-example" style="margin:8px 0;">readings = [98, 105, 112, 95, 101, 120, 99, 108]
+limit = 100</pre>
+<p>Напишіть програму, яка підрахує та виведе на екран <strong>кількість показників, більших за <code>limit</code> (100)</strong>.</p>
+<p><strong>Обов'язково використайте:</strong> змінну-лічильник <code>count = 0</code>, цикл <code>for</code>, умову <code>if</code> та виведення результату.</p>`,
+    explanation: `<p>Задача підрахунку елементів за умовою розв'язується за допомогою лічильника:</p>
+<ol style="padding-left:20px;">
+  <li>До циклу задайте початкове значення лічильника: <code>count = 0</code>.</li>
+  <li>Переберіть усі елементи списку: <code>for val in readings:</code>.</li>
+  <li>Перевірте умову перевищення порогу: <code>if val > limit:</code> (або <code>if val > 100:</code>).</li>
+  <li>Збільште лічильник на одиницю: <code>count += 1</code> (або <code>count = count + 1</code>).</li>
+  <li>Після циклу виведіть підсумкове значення: <code>print(count)</code>.</li>
+</ol>`,
+    goal: "Закріпити навички побудови алгоритму аналізу даних із використанням змінної-лічильника, циклу for та умови if.",
+    initialCode: `readings = [98, 105, 112, 95, 101, 120, 99, 108]\nlimit = 100\ncount = 0\n# Переберіть readings, порахуйте значення > limit та виведіть count\n`,
+    hint: "Використайте цикл for val in readings:, умову if val > limit: та збільшуйте лічильник count += 1. Після циклу викличте print(count). Правильна відповідь: 5.",
+    validate: (code, execResult) => {
+      if (execResult.error) {
+        return { ok: false, msg: "Помилка виконання: " + execResult.error };
+      }
+      if (!/count\s*=\s*0/.test(code)) {
+        return { ok: false, msg: "Оголосіть початкове значення лічильника count = 0 перед циклом." };
+      }
+      if (!/for\s+[a-zA-Z_]\w*\s+in\s+readings\s*:/.test(code)) {
+        return { ok: false, msg: "Використайте цикл for для перебирання списку readings." };
+      }
+      if (!/if\s+[a-zA-Z_]\w*\s*>\s*(limit|100)\s*:/.test(code)) {
+        return { ok: false, msg: "Додайте умову перевірки, що елемент більший за limit (100): if val > limit:" };
+      }
+      if (!/(count\s*\+=\s*1|count\s*=\s*count\s*\+\s*1)/.test(code)) {
+        return { ok: false, msg: "Усередині умови if збільшуйте лічильник на 1: count += 1." };
+      }
+      const hasFive = execResult.outputs.some(o => /\b5\b/.test(o));
+      if (!hasFive) {
+        return { ok: false, msg: "У списку є 5 значень, більших за 100 (105, 112, 101, 120, 108). Переконайтеся, що програма виводить 5." };
+      }
+      return { ok: true, msg: "Вітаємо! Мініпроєкт «Аналіз даних» виконано бездоганно: виявлено 5 перевищень норми." };
+    }
+  }
+];
+
+// ==================== 2. SAFE PYTHON SUBSET INTERPRETER (EDUCATIONAL SIMULATION) ====================
+// Executes safe Python list constructs without eval()
+function runSafePythonSimulation(rawCode) {
+  const lines = rawCode.replace(/\r\n/g, "\n").split("\n");
+  const env = {};
+  const outputs = [];
+
+  function formatPyVal(val) {
+    if (Array.isArray(val)) {
+      return "[" + val.map(v => typeof v === "string" ? `'${v}'` : String(v)).join(", ") + "]";
+    }
+    if (typeof val === "boolean") return val ? "True" : "False";
+    if (val === null || val === undefined) return "None";
+    return String(val);
+  }
+
+  function evalExpr(expr) {
+    expr = expr.trim();
+    // Strip inline comment outside strings
+    let inStr = null, clean = "";
+    for (let i = 0; i < expr.length; i++) {
+      const ch = expr[i];
+      if ((ch === '"' || ch === "'") && expr[i - 1] !== "\\") {
+        if (inStr === ch) inStr = null;
+        else if (!inStr) inStr = ch;
+      }
+      if (ch === "#" && !inStr) break;
+      clean += ch;
+    }
+    expr = clean.trim();
+    if (!expr) return undefined;
+
+    // String literal
+    if ((expr.startsWith('"') && expr.endsWith('"')) || (expr.startsWith("'") && expr.endsWith("'"))) {
+      return expr.slice(1, -1);
+    }
+
+    // Number literal
+    if (/^-?\d+(\.\d+)?$/.test(expr)) {
+      return Number(expr);
+    }
+
+    // List literal
+    if (expr.startsWith("[") && expr.endsWith("]")) {
+      const inner = expr.slice(1, -1).trim();
+      if (!inner) return [];
+      const parts = splitTopLevel(inner, ",");
+      return parts.map(p => evalExpr(p));
+    }
+
+    // len(...)
+    const lenMatch = expr.match(/^len\((.+)\)$/);
+    if (lenMatch) {
+      const target = evalExpr(lenMatch[1]);
+      if (!Array.isArray(target) && typeof target !== "string") {
+        throw new Error("TypeError: об'єкт не має довжини len()");
+      }
+      return target.length;
+    }
+
+    // sum(...)
+    const sumMatch = expr.match(/^sum\((.+)\)$/);
+    if (sumMatch) {
+      const target = evalExpr(sumMatch[1]);
+      if (!Array.isArray(target)) throw new Error("TypeError: sum() очікує список");
+      return target.reduce((acc, v) => acc + Number(v), 0);
+    }
+
+    // max(...)
+    const maxMatch = expr.match(/^max\((.+)\)$/);
+    if (maxMatch) {
+      const target = evalExpr(maxMatch[1]);
+      if (!Array.isArray(target) || target.length === 0) throw new Error("ValueError: max() отримав порожній список");
+      return Math.max(...target.map(Number));
+    }
+
+    // min(...)
+    const minMatch = expr.match(/^min\((.+)\)$/);
+    if (minMatch) {
+      const target = evalExpr(minMatch[1]);
+      if (!Array.isArray(target) || target.length === 0) throw new Error("ValueError: min() отримав порожній список");
+      return Math.min(...target.map(Number));
+    }
+
+    // range(...)
+    const rangeMatch = expr.match(/^range\((.+)\)$/);
+    if (rangeMatch) {
+      const args = splitTopLevel(rangeMatch[1], ",").map(a => Number(evalExpr(a)));
+      let start = 0, stop = 0, step = 1;
+      if (args.length === 1) stop = args[0];
+      else if (args.length === 2) { start = args[0]; stop = args[1]; }
+      else if (args.length === 3) { start = args[0]; stop = args[1]; step = args[2]; }
+      const res = [];
+      for (let i = start; step > 0 ? i < stop : i > stop; i += step) res.push(i);
+      return res;
+    }
+
+    // Indexing: var[idx]
+    const idxMatch = expr.match(/^([a-zA-Z_]\w*)\[(.+)\]$/);
+    if (idxMatch) {
+      const listVal = env[idxMatch[1]];
+      if (!Array.isArray(listVal)) throw new Error(`NameError або TypeError: '${idxMatch[1]}' не є списком`);
+      let idx = Number(evalExpr(idxMatch[2]));
+      if (!Number.isInteger(idx)) throw new Error("TypeError: індекс списку має бути цілим числом");
+      if (idx < 0) idx = listVal.length + idx;
+      if (idx < 0 || idx >= listVal.length) {
+        throw new Error(`IndexError: індекс ${idx} виходить за межі списку довжиною ${listVal.length}`);
+      }
+      return listVal[idx];
+    }
+
+    // Binary arithmetic / comparison operators at top level
+    const ops = ["==", "!=", ">=", "<=", ">", "<", "+", "-", "*", "/", "%"];
+    for (const op of ops) {
+      const idx = findTopLevelOp(expr, op);
+      if (idx !== -1) {
+        const left = evalExpr(expr.slice(0, idx));
+        const right = evalExpr(expr.slice(idx + op.length));
+        switch (op) {
+          case "==": return left === right;
+          case "!=": return left !== right;
+          case ">=": return left >= right;
+          case "<=": return left <= right;
+          case ">":  return left > right;
+          case "<":  return left < right;
+          case "+":
+            if (Array.isArray(left) && Array.isArray(right)) return left.concat(right);
+            return left + right;
+          case "-":  return left - right;
+          case "*":  return left * right;
+          case "/":
+            if (right === 0) throw new Error("ZeroDivisionError: ділення на нуль");
+            const d = left / right;
+            return Number.isInteger(d) ? d.toFixed(1) : Number(d.toFixed(4));
+          case "%":  return left % right;
+        }
+      }
+    }
+
+    // Variable lookup
+    if (/^[a-zA-Z_]\w*$/.test(expr)) {
+      if (!(expr in env)) {
+        throw new Error(`NameError: змінна '${expr}' не визначена`);
+      }
+      return env[expr];
+    }
+
+    throw new Error(`SyntaxError: нерозпізнаний вираз '${expr}'`);
+  }
+
+  function splitTopLevel(str, delimiter) {
+    const res = [];
+    let depth = 0, inStr = null, buf = "";
+    for (let i = 0; i < str.length; i++) {
+      const ch = str[i];
+      if ((ch === '"' || ch === "'") && str[i - 1] !== "\\") {
+        if (inStr === ch) inStr = null;
+        else if (!inStr) inStr = ch;
+      }
+      if (!inStr) {
+        if (ch === "[" || ch === "(") depth++;
+        if (ch === "]" || ch === ")") depth--;
+        if (depth === 0 && str.slice(i, i + delimiter.length) === delimiter) {
+          res.push(buf.trim());
+          buf = "";
+          i += delimiter.length - 1;
+          continue;
+        }
+      }
+      buf += ch;
+    }
+    if (buf.trim() !== "") res.push(buf.trim());
+    return res;
+  }
+
+  function findTopLevelOp(str, op) {
+    let depth = 0, inStr = null;
+    for (let i = 0; i <= str.length - op.length; i++) {
+      const ch = str[i];
+      if ((ch === '"' || ch === "'") && str[i - 1] !== "\\") {
+        if (inStr === ch) inStr = null;
+        else if (!inStr) inStr = ch;
+      }
+      if (!inStr) {
+        if (ch === "[" || ch === "(") depth++;
+        if (ch === "]" || ch === ")") depth--;
+        if (depth === 0 && str.slice(i, i + op.length) === op) {
+          // Avoid matching '=' inside '==', '!=', '>=', '<='
+          if ((op === ">" || op === "<") && str[i + 1] === "=") continue;
+          // Avoid unary minus at index 0
+          if (op === "-" && i === 0) continue;
+          return i;
+        }
+      }
+    }
+    return -1;
+  }
+
+  function getIndent(line) {
+    let count = 0;
+    for (const ch of line) {
+      if (ch === " ") count++;
+      else if (ch === "\t") count += 4;
+      else break;
+    }
+    return count;
+  }
+
+  function stripComment(line) {
+    let inStr = null, out = "";
+    for (let i = 0; i < line.length; i++) {
+      const ch = line[i];
+      if ((ch === '"' || ch === "'") && line[i - 1] !== "\\") {
+        if (inStr === ch) inStr = null;
+        else if (!inStr) inStr = ch;
+      }
+      if (ch === "#" && !inStr) break;
+      out += ch;
+    }
+    return out.trim();
+  }
+
+  function execBlock(startIdx, expectedIndent) {
+    let i = startIdx;
+    let steps = 0;
+    while (i < lines.length) {
+      if (++steps > 2000) throw new Error("RuntimeError: перевищено ліміт ітерацій циклу");
+      const raw = lines[i];
+      const stripped = stripComment(raw);
+      if (!stripped) {
+        i++;
+        continue;
+      }
+      const indent = getIndent(raw);
+      if (indent < expectedIndent) break;
+      if (indent > expectedIndent) {
+        throw new Error(`IndentationError: неочікуваний відступ у рядку ${i + 1}`);
+      }
+
+      // for var in iterable:
+      if (stripped.startsWith("for ")) {
+        const m = stripped.match(/^for\s+([a-zA-Z_]\w*)\s+in\s+(.+):$/);
+        if (!m) throw new Error(`SyntaxError: неправильний синтаксис циклу for у рядку ${i + 1}`);
+        const iterVar = m[1];
+        const iterable = evalExpr(m[2]);
+        if (!Array.isArray(iterable)) {
+          throw new Error(`TypeError: об'єкт у циклі for не підтримує перебирання (рядок ${i + 1})`);
+        }
+        // Find child block end
+        let nextIdx = i + 1;
+        while (nextIdx < lines.length && !stripComment(lines[nextIdx])) nextIdx++;
+        if (nextIdx >= lines.length || getIndent(lines[nextIdx]) <= expectedIndent) {
+          throw new Error(`IndentationError: очікувався блок з відступом після for (рядок ${i + 1})`);
+        }
+        const childIndent = getIndent(lines[nextIdx]);
+        let afterBlock = nextIdx;
+        for (const item of iterable) {
+          env[iterVar] = item;
+          afterBlock = execBlock(nextIdx, childIndent);
+        }
+        if (iterable.length === 0) {
+          while (afterBlock < lines.length) {
+            if (stripComment(lines[afterBlock]) && getIndent(lines[afterBlock]) <= expectedIndent) break;
+            afterBlock++;
+          }
+        }
+        i = afterBlock;
+        continue;
+      }
+
+      // if condition:
+      if (stripped.startsWith("if ")) {
+        const m = stripped.match(/^if\s+(.+):$/);
+        if (!m) throw new Error(`SyntaxError: перевірте умову if та наявність ':' у рядку ${i + 1}`);
+        const cond = Boolean(evalExpr(m[1]));
+        let nextIdx = i + 1;
+        while (nextIdx < lines.length && !stripComment(lines[nextIdx])) nextIdx++;
+        if (nextIdx >= lines.length || getIndent(lines[nextIdx]) <= expectedIndent) {
+          throw new Error(`IndentationError: очікувався відступ після умови if (рядок ${i + 1})`);
+        }
+        const childIndent = getIndent(lines[nextIdx]);
+        if (cond) {
+          i = execBlock(nextIdx, childIndent);
+        } else {
+          let skip = nextIdx;
+          while (skip < lines.length) {
+            if (stripComment(lines[skip]) && getIndent(lines[skip]) <= expectedIndent) break;
+            skip++;
+          }
+          i = skip;
+        }
+        continue;
+      }
+
+      // print(...)
+      const printMatch = stripped.match(/^print\((.*)\)$/);
+      if (printMatch) {
+        const inner = printMatch[1].trim();
+        if (!inner) {
+          outputs.push("");
+        } else {
+          const args = splitTopLevel(inner, ",");
+          const rendered = args.map(a => {
+            const v = evalExpr(a);
+            return Array.isArray(v) ? formatPyVal(v) : String(v);
+          }).join(" ");
+          outputs.push(rendered);
+        }
+        i++;
+        continue;
+      }
+
+      // list.append(x)
+      const appendMatch = stripped.match(/^([a-zA-Z_]\w*)\.append\((.+)\)$/);
+      if (appendMatch) {
+        const listName = appendMatch[1];
+        if (!Array.isArray(env[listName])) throw new Error(`NameError: список '${listName}' не знайдено`);
+        env[listName].push(evalExpr(appendMatch[2]));
+        i++;
+        continue;
+      }
+
+      // list.insert(idx, x)
+      const insertMatch = stripped.match(/^([a-zA-Z_]\w*)\.insert\((.+)\)$/);
+      if (insertMatch) {
+        const listName = insertMatch[1];
+        if (!Array.isArray(env[listName])) throw new Error(`NameError: список '${listName}' не знайдено`);
+        const args = splitTopLevel(insertMatch[2], ",");
+        env[listName].splice(Number(evalExpr(args[0])), 0, evalExpr(args[1]));
+        i++;
+        continue;
+      }
+
+      // list.remove(x)
+      const removeMatch = stripped.match(/^([a-zA-Z_]\w*)\.remove\((.+)\)$/);
+      if (removeMatch) {
+        const listName = removeMatch[1];
+        if (!Array.isArray(env[listName])) throw new Error(`NameError: список '${listName}' не знайдено`);
+        const target = evalExpr(removeMatch[2]);
+        const pos = env[listName].indexOf(target);
+        if (pos === -1) throw new Error(`ValueError: ${target} відсутній у списку`);
+        env[listName].splice(pos, 1);
+        i++;
+        continue;
+      }
+
+      // var += val
+      const plusEqMatch = stripped.match(/^([a-zA-Z_]\w*)\s*\+=\s*(.+)$/);
+      if (plusEqMatch) {
+        const vName = plusEqMatch[1];
+        if (!(vName in env)) throw new Error(`NameError: змінна '${vName}' не визначена перед +=`);
+        env[vName] = env[vName] + evalExpr(plusEqMatch[2]);
+        i++;
+        continue;
+      }
+
+      // list[idx] = val
+      const idxAssignMatch = stripped.match(/^([a-zA-Z_]\w*)\[(.+)\]\s*=\s*(.+)$/);
+      if (idxAssignMatch) {
+        const lName = idxAssignMatch[1];
+        if (!Array.isArray(env[lName])) throw new Error(`NameError: список '${lName}' не визначено`);
+        const idx = Number(evalExpr(idxAssignMatch[2]));
+        env[lName][idx] = evalExpr(idxAssignMatch[3]);
+        i++;
+        continue;
+      }
+
+      // var = expr
+      const assignMatch = stripped.match(/^([a-zA-Z_]\w*)\s*=\s*(.+)$/);
+      if (assignMatch) {
+        env[assignMatch[1]] = evalExpr(assignMatch[2]);
+        i++;
+        continue;
+      }
+
+      throw new Error(`SyntaxError: непідтримувана або помилкова інструкція у рядку ${i + 1}: '${stripped}'`);
+    }
+    return i;
+  }
+
+  try {
+    execBlock(0, 0);
+    return { outputs, error: null };
+  } catch (err) {
+    return { outputs, error: err.message };
+  }
+}
+
+// ==================== 3. STATE & STORAGE MANAGEMENT ====================
+const STORAGE_KEY = "list_lab_10_state_v1";
+
+let appState = {
+  student: null, // { fullName, studentClass, date }
+  activeTaskId: 1,
+  tasks: {}
+};
+
+function initEmptyTasksState() {
+  const obj = {};
+  TASKS.forEach(t => {
+    obj[t.id] = {
+      code: t.initialCode,
+      attempts: 0,
+      errors: 0,
+      completed: false,
+      score: 0,
+      secondsSpent: 0,
+      startedAt: null,
+      lastFeedback: null
+    };
+  });
+  return obj;
+}
+
+function loadState() {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (raw) {
+      const parsed = JSON.parse(raw);
+      if (parsed && parsed.student) {
+        appState.student = parsed.student;
+        appState.activeTaskId = parsed.activeTaskId || 1;
+        appState.tasks = initEmptyTasksState();
+        if (parsed.tasks) {
+          TASKS.forEach(t => {
+            if (parsed.tasks[t.id]) {
+              appState.tasks[t.id] = { ...appState.tasks[t.id], ...parsed.tasks[t.id] };
+            }
+          });
+        }
+      }
+    }
+  } catch (e) {
+    console.warn("Не вдалося зчитати localStorage:", e);
+  }
+}
+
+function saveState() {
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(appState));
+  } catch (e) {
+    console.warn("Не вдалося зберегти у localStorage:", e);
+  }
+}
+
+// ==================== 4. TIMER LOGIC (NO DUPLICATION) ====================
+let activeTimerInterval = null;
+let currentTab = "practice";
+
+function startTimerLoop() {
+  if (activeTimerInterval) clearInterval(activeTimerInterval);
+  activeTimerInterval = setInterval(() => {
+    if (!appState.student) return;
+    if (currentTab === "practice" && !document.hidden) {
+      const tState = appState.tasks[appState.activeTaskId];
+      if (!tState.startedAt) {
+        tState.startedAt = Date.now();
+      }
+      tState.secondsSpent += 1;
+      document.getElementById("m-time").textContent = formatDuration(tState.secondsSpent);
+      if (tState.secondsSpent % 5 === 0) saveState();
+    }
+  }, 1000);
+}
+
+function formatDuration(totalSec) {
+  const mins = Math.floor(totalSec / 60);
+  const secs = totalSec % 60;
+  return String(mins).padStart(2, "0") + ":" + String(secs).padStart(2, "0");
+}
+
+// ==================== 5. REGISTRATION & NAVIGATION ====================
+document.addEventListener("DOMContentLoaded", () => {
+  const dateInput = document.getElementById("input-date");
+  const todayISO = new Date().toISOString().split("T")[0];
+  dateInput.value = todayISO;
+
+  loadState();
+
+  if (appState.student && appState.student.fullName && appState.student.studentClass) {
+    enterLaboratory();
+  }
+
+  document.getElementById("reg-form").addEventListener("submit", (e) => {
+    e.preventDefault();
+    const nameVal = document.getElementById("input-fullname").value.trim();
+    const classVal = document.getElementById("input-class").value.trim();
+    const dateVal = document.getElementById("input-date").value || todayISO;
+
+    let valid = true;
+    if (nameVal.length < 3) {
+      document.getElementById("err-fullname").style.display = "block";
+      valid = false;
+    } else {
+      document.getElementById("err-fullname").style.display = "none";
+    }
+
+    if (classVal.length < 2) {
+      document.getElementById("err-class").style.display = "block";
+      valid = false;
+    } else {
+      document.getElementById("err-class").style.display = "none";
+    }
+
+    if (!valid) return;
+
+    appState.student = {
+      fullName: nameVal,
+      studentClass: classVal,
+      date: dateVal
+    };
+    appState.tasks = initEmptyTasksState();
+    appState.activeTaskId = 1;
+    saveState();
+    enterLaboratory();
+  });
+
+  // Editor line numbers & Tab key support
+  const editor = document.getElementById("code-editor");
+  editor.addEventListener("input", () => {
+    updateLineNumbers();
+    appState.tasks[appState.activeTaskId].code = editor.value;
+    saveState();
+  });
+  editor.addEventListener("scroll", () => {
+    document.getElementById("line-numbers").scrollTop = editor.scrollTop;
+  });
+  editor.addEventListener("keydown", (e) => {
+    if (e.key === "Tab") {
+      e.preventDefault();
+      const start = editor.selectionStart;
+      const end = editor.selectionEnd;
+      editor.value = editor.value.substring(0, start) + "    " + editor.value.substring(end);
+      editor.selectionStart = editor.selectionEnd = start + 4;
+      updateLineNumbers();
+      appState.tasks[appState.activeTaskId].code = editor.value;
+    }
+  });
+});
+
+function enterLaboratory() {
+  document.getElementById("screen-register").classList.add("hidden");
+  document.getElementById("app-main").classList.remove("hidden");
+
+  document.getElementById("hdr-name").textContent = appState.student.fullName;
+  document.getElementById("hdr-class").textContent = appState.student.studentClass;
+
+  renderTaskSidebar();
+  selectTask(appState.activeTaskId);
+  updateSummaryUI();
+  startTimerLoop();
+}
+
+function switchTab(tabName) {
+  currentTab = tabName;
+  document.querySelectorAll(".nav-tab").forEach(btn => {
+    btn.classList.toggle("active", btn.dataset.tab === tabName);
+  });
+  document.getElementById("section-practice").classList.toggle("hidden", tabName !== "practice");
+  document.getElementById("section-theory").classList.toggle("hidden", tabName !== "theory");
+  document.getElementById("section-results").classList.toggle("hidden", tabName !== "results");
+
+  if (tabName === "results") {
+    renderResultsTable();
+  }
+}
+
+function resetAllProgress() {
+  if (confirm("Ви дійсно бажаєте очистити всі результати та повернутися на екран реєстрації?")) {
+    localStorage.removeItem(STORAGE_KEY);
+    location.reload();
+  }
+}
+
+// ==================== 6. TASK RENDERING & INTERACTION ====================
+function renderTaskSidebar() {
+  [1, 2, 3].forEach(lvl => {
+    const container = document.getElementById(`nav-level-${lvl}`);
+    container.innerHTML = "";
+    TASKS.filter(t => t.level === lvl).forEach(task => {
+      const tState = appState.tasks[task.id];
+      const btn = document.createElement("button");
+      btn.className = "task-nav-btn" +
+        (task.id === appState.activeTaskId ? " active" : "") +
+        (tState.completed ? " completed" : "");
+      btn.onclick = () => selectTask(task.id);
+
+      const shortTitle = task.title.replace(/^Завдання \d+\.\s*/, `${task.id}. `);
+      btn.innerHTML = `
+        <span>${shortTitle}</span>
+        <span class="task-badge-score">${tState.score}/12</span>
+      `;
+      container.appendChild(btn);
+    });
+  });
+}
+
+function selectTask(taskId) {
+  appState.activeTaskId = taskId;
+  const task = TASKS.find(t => t.id === taskId);
+  const tState = appState.tasks[taskId];
+
+  if (!tState.startedAt) {
+    tState.startedAt = Date.now();
+  }
+  saveState();
+
+  // Level badge
+  const lvlBadge = document.getElementById("task-level-badge");
+  lvlBadge.textContent = task.levelName;
+  lvlBadge.className = `level-pill level-${task.level}`;
+
+  // Metrics
+  document.getElementById("m-attempts").textContent = tState.attempts;
+  document.getElementById("m-errors").textContent = tState.errors;
+  document.getElementById("m-time").textContent = formatDuration(tState.secondsSpent);
+  document.getElementById("m-score").textContent = `${tState.score} / 12`;
+
+  // Content
+  document.getElementById("task-title").textContent = task.title;
+  document.getElementById("task-condition").innerHTML = task.condition;
+  document.getElementById("task-explanation").innerHTML = task.explanation;
+  document.getElementById("task-goal").textContent = task.goal;
+
+  // Editor
+  document.getElementById("editor-file-num").textContent = task.id;
+  const editor = document.getElementById("code-editor");
+  editor.value = tState.code;
+  updateLineNumbers();
+
+  // Reset Shell & Hint
+  resetShellView(task.id);
+  const hintBox = document.getElementById("task-hint-box");
+  hintBox.classList.add("hidden");
+  hintBox.innerHTML = `<strong>&#128161; Підказка:</strong> ${task.hint}`;
+
+  // Restore last feedback if exists
+  const fbBox = document.getElementById("task-feedback-box");
+  if (tState.lastFeedback) {
+    fbBox.className = "feedback-box " + (tState.lastFeedback.ok ? "feedback-success" : "feedback-error");
+    fbBox.innerHTML = tState.lastFeedback.html;
+    fbBox.classList.remove("hidden");
+  } else {
+    fbBox.classList.add("hidden");
+  }
+
+  // Footer buttons
+  document.getElementById("btn-prev-task").disabled = taskId === 1;
+  document.getElementById("btn-next-task").disabled = taskId === TASKS.length;
+
+  renderTaskSidebar();
+}
+
+function updateLineNumbers() {
+  const editor = document.getElementById("code-editor");
+  const linesCount = editor.value.split("\n").length;
+  const nums = [];
+  for (let i = 1; i <= Math.max(linesCount, 6); i++) nums.push(i);
+  document.getElementById("line-numbers").textContent = nums.join("\n");
+}
+
+function resetShellView(taskId) {
+  const shell = document.getElementById("python-shell");
+  shell.innerHTML = `<div class="shell-banner">Python 3.12.0 Shell (LIST//LAB Educational Runtime)<br>Натисніть «Запустити код» або «Перевірити», щоб виконати програму task_${taskId}.py</div><div><span class="shell-prompt">&gt;&gt;&gt;</span></div>`;
+}
+
+function renderShellExecution(code, execResult) {
+  const shell = document.getElementById("python-shell");
+  const cmdLines = code.split("\n").filter(l => l.trim() !== "");
+  let html = `<div class="shell-banner">Python 3.12.0 Shell — Виконання файлу</div>`;
+
+  cmdLines.forEach(line => {
+    html += `<div class="shell-cmd"><span class="shell-prompt">&gt;&gt;&gt;</span> ${escapeHtml(line)}</div>`;
+  });
+
+  if (execResult.outputs.length > 0) {
+    html += `<div class="shell-out">${execResult.outputs.map(o => escapeHtml(o)).join("\n")}</div>`;
+  } else if (!execResult.error) {
+    html += `<div class="shell-out" style="color:#64748b;">(Програма завершилася без виведення тексту. Використайте print(), щоб побачити результат.)</div>`;
+  }
+
+  if (execResult.error) {
+    html += `<div class="shell-err">Traceback (most recent call last):\n  File "task_${appState.activeTaskId}.py"\n${escapeHtml(execResult.error)}</div>`;
+  }
+
+  html += `<div><span class="shell-prompt">&gt;&gt;&gt;</span></div>`;
+  shell.innerHTML = html;
+  shell.scrollTop = shell.scrollHeight;
+}
+
+function runCurrentTaskCode() {
+  const code = document.getElementById("code-editor").value;
+  appState.tasks[appState.activeTaskId].code = code;
+  saveState();
+  const res = runSafePythonSimulation(code);
+  renderShellExecution(code, res);
+  return res;
+}
+
+function calculateAttemptScore(attemptNumber) {
+  if (attemptNumber === 1) return 12;
+  if (attemptNumber === 2) return 10;
+  if (attemptNumber === 3) return 8;
+  if (attemptNumber === 4) return 6;
+  return 4;
+}
+
+function checkCurrentTask() {
+  const task = TASKS.find(t => t.id === appState.activeTaskId);
+  const tState = appState.tasks[task.id];
+  const code = document.getElementById("code-editor").value;
+  tState.code = code;
+
+  // Run code first
+  const execResult = runSafePythonSimulation(code);
+  renderShellExecution(code, execResult);
+
+  // Increment attempt
+  tState.attempts += 1;
+
+  const verdict = task.validate(code, execResult);
+  const fbBox = document.getElementById("task-feedback-box");
+
+  if (verdict.ok) {
+    if (!tState.completed) {
+      tState.completed = true;
+      tState.score = calculateAttemptScore(tState.attempts);
+    }
+    const html = `
+      <div class="feedback-title">&#9989; Завдання виконано правильно!</div>
+      <p>${escapeHtml(verdict.msg)}</p>
+      <p style="margin-top:8px; font-size:0.88rem;">
+        <strong>Спроба №:</strong> ${tState.attempts} &bull;
+        <strong>Допущено помилок:</strong> ${tState.errors} &bull;
+        <strong>Зафіксована оцінка:</strong> ${tState.score} балів із 12
+      </p>
+    `;
+    fbBox.className = "feedback-box feedback-success";
+    fbBox.innerHTML = html;
+    tState.lastFeedback = { ok: true, html };
+  } else {
+    tState.errors += 1;
+    const html = `
+      <div class="feedback-title">&#10060; Потрібне доопрацювання</div>
+      <p>${escapeHtml(verdict.msg)}</p>
+      <p style="margin-top:8px; font-size:0.88rem;">
+        <strong>Рекомендація:</strong> перевірте підказку або теоретичний довідник та спробуйте ще раз.<br>
+        <strong>Використано спроб:</strong> ${tState.attempts} &bull;
+        <strong>Кількість помилок:</strong> ${tState.errors} &bull;
+        <strong>Поточні бали:</strong> ${tState.score} / 12
+      </p>
+    `;
+    fbBox.className = "feedback-box feedback-error";
+    fbBox.innerHTML = html;
+    tState.lastFeedback = { ok: false, html };
+  }
+
+  fbBox.classList.remove("hidden");
+  saveState();
+  selectTask(task.id);
+  updateSummaryUI();
+}
+
+function toggleHint() {
+  const box = document.getElementById("task-hint-box");
+  box.classList.toggle("hidden");
+}
+
+function restoreInitialCode() {
+  const task = TASKS.find(t => t.id === appState.activeTaskId);
+  const editor = document.getElementById("code-editor");
+  editor.value = task.initialCode;
+  appState.tasks[task.id].code = task.initialCode;
+  saveState();
+  updateLineNumbers();
+  resetShellView(task.id);
+}
+
+function navigateTask(delta) {
+  const nextId = appState.activeTaskId + delta;
+  if (nextId >= 1 && nextId <= TASKS.length) {
+    selectTask(nextId);
+  }
+}
+
+// ==================== 7. STATISTICS & REPORTING ====================
+function computeStats() {
+  let completedCount = 0;
+  let totalScore = 0;
+  let totalAttempts = 0;
+  let totalErrors = 0;
+  let totalSeconds = 0;
+
+  TASKS.forEach(t => {
+    const s = appState.tasks[t.id];
+    if (s.completed) completedCount++;
+    totalScore += s.score;
+    totalAttempts += s.attempts;
+    totalErrors += s.errors;
+    totalSeconds += s.secondsSpent;
+  });
+
+  const percent = Math.round((completedCount / TASKS.length) * 100);
+  const grade12 = Math.round((totalScore / 108) * 12);
+  const avgAttempts = completedCount > 0 ? (totalAttempts / completedCount).toFixed(1) : "0.0";
+
+  return {
+    completedCount,
+    totalTasks: TASKS.length,
+    totalScore,
+    maxScore: 108,
+    grade12,
+    percent,
+    totalAttempts,
+    totalErrors,
+    avgAttempts,
+    totalSeconds
+  };
+}
+
+function updateSummaryUI() {
+  const st = computeStats();
+  document.getElementById("hdr-done").textContent = `${st.completedCount} / ${st.totalTasks}`;
+  document.getElementById("hdr-score").textContent = `${st.totalScore} / ${st.maxScore}`;
+  document.getElementById("hdr-pct").textContent = `${st.percent}%`;
+  document.getElementById("hdr-progress-bar").style.width = `${st.percent}%`;
+
+  if (currentTab === "results") {
+    renderResultsTable();
+  }
+}
+
+function renderResultsTable() {
+  const st = computeStats();
+  document.getElementById("st-completed").textContent = `${st.completedCount} / ${st.totalTasks}`;
+  document.getElementById("st-percent").textContent = `Прогрес: ${st.percent}%`;
+  document.getElementById("st-total-score").textContent = `${st.totalScore} / ${st.maxScore}`;
+  document.getElementById("st-grade-12").textContent = `${st.grade12} б.`;
+  document.getElementById("st-attempts").textContent = st.totalAttempts;
+  document.getElementById("st-errors").textContent = st.totalErrors;
+  document.getElementById("st-avg-attempts").textContent = `Середнє спроб на завд.: ${st.avgAttempts}`;
+  document.getElementById("st-total-time").textContent = formatDuration(st.totalSeconds);
+
+  document.getElementById("res-student-label").textContent =
+    `${appState.student.fullName} (${appState.student.studentClass}), дата: ${appState.student.date}`;
+
+  // Print header values
+  document.getElementById("pr-name").textContent = appState.student.fullName;
+  document.getElementById("pr-class").textContent = appState.student.studentClass;
+  document.getElementById("pr-date").textContent = appState.student.date;
+
+  const tbody = document.getElementById("results-tbody");
+  tbody.innerHTML = "";
+  TASKS.forEach(t => {
+    const s = appState.tasks[t.id];
+    const tr = document.createElement("tr");
+    const cleanName = t.title.replace(/^Завдання \d+\.\s*/, "");
+    tr.innerHTML = `
+      <td><strong>${t.id}</strong></td>
+      <td>${escapeHtml(cleanName)}</td>
+      <td>${s.completed
+        ? '<span class="status-pill st-done">Виконано</span>'
+        : '<span class="status-pill st-pending">Не виконано</span>'}</td>
+      <td>${s.attempts}</td>
+      <td>${s.errors}</td>
+      <td><strong>${s.score} / 12</strong></td>
+      <td>${formatDuration(s.secondsSpent)}</td>
+    `;
+    tbody.appendChild(tr);
+  });
+}
+
+function printPDFReport() {
+  switchTab("results");
+  setTimeout(() => {
+    window.print();
+  }, 150);
+}
+
+// Strictly statistics-only report (NO task conditions, NO initial code, NO solutions!)
+function downloadHTMLReport() {
+  const st = computeStats();
+  const rowsHtml = TASKS.map(t => {
+    const s = appState.tasks[t.id];
+    const cleanName = t.title.replace(/^Завдання \d+\.\s*/, "");
+    return `
+      <tr>
+        <td>${t.id}</td>
+        <td>${escapeHtml(cleanName)}</td>
+        <td>${s.completed ? "Виконано" : "Не виконано"}</td>
+        <td>${s.attempts}</td>
+        <td>${s.errors}</td>
+        <td><strong>${s.score} / 12</strong></td>
+        <td>${formatDuration(s.secondsSpent)}</td>
+      </tr>`;
+  }).join("");
+
+  const reportDoc = `<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="UTF-8">
+<title>Звіт LIST//LAB — ${escapeHtml(appState.student.fullName)}</title>
+<style>
+  body { font-family: "Segoe UI", Arial, sans-serif; color: #0f172a; margin: 32px; line-height: 1.5; }
+  .header { border-bottom: 3px solid #2563eb; padding-bottom: 14px; margin-bottom: 22px; }
+  .header h1 { margin: 0 0 6px; font-size: 22px; color: #1e3a8a; }
+  .meta-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; background: #f8fafc; padding: 14px; border: 1px solid #cbd5e1; border-radius: 8px; margin-bottom: 20px; }
+  .summary-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 22px; }
+  .card { border: 1px solid #cbd5e1; border-radius: 8px; padding: 12px; background: #ffffff; }
+  .card .lbl { font-size: 12px; color: #64748b; }
+  .card .val { font-size: 20px; font-weight: 700; color: #0f172a; margin-top: 4px; }
+  table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+  th, td { border: 1px solid #cbd5e1; padding: 10px 12px; text-align: left; font-size: 14px; }
+  th { background: #eff6ff; color: #1e3a8a; }
+  .note { margin-top: 18px; font-size: 12px; color: #475569; }
+</style>
+</head>
+<body>
+  <div class="header">
+    <h1>LIST//LAB — Підсумковий звіт виконання практикуму</h1>
+    <div>Тема: «Обробка одномірних списків даних мовою програмування Python» (10 клас)</div>
+  </div>
+
+  <div class="meta-grid">
+    <div><strong>Учень:</strong> ${escapeHtml(appState.student.fullName)}</div>
+    <div><strong>Клас:</strong> ${escapeHtml(appState.student.studentClass)}</div>
+    <div><strong>Дата виконання:</strong> ${escapeHtml(appState.student.date)}</div>
+  </div>
+
+  <div class="summary-grid">
+    <div class="card"><div class="lbl">Виконано завдань</div><div class="val">${st.completedCount} із ${st.totalTasks} (${st.percent}%)</div></div>
+    <div class="card"><div class="lbl">Сума набраних балів</div><div class="val">${st.totalScore} із ${st.maxScore}</div></div>
+    <div class="card"><div class="lbl">Оцінка за 12-б. шкалою</div><div class="val">${st.grade12} балів</div></div>
+    <div class="card"><div class="lbl">Спроби / Помилки / Час</div><div class="val">${st.totalAttempts} / ${st.totalErrors} / ${formatDuration(st.totalSeconds)}</div></div>
+  </div>
+
+  <h3>Детальна статистика за завданнями</h3>
+  <table>
+    <thead>
+      <tr>
+        <th>№</th>
+        <th>Назва завдання</th>
+        <th>Статус</th>
+        <th>Спроби</th>
+        <th>Помилки</th>
+        <th>Бали</th>
+        <th>Час</th>
+      </tr>
+    </thead>
+    <tbody>${rowsHtml}</tbody>
+  </table>
+
+  <div class="note">
+    Примітка: підсумкова оцінка за 12-бальною шкалою розрахована за формулою round((Сума_балів / 108) * 12).
+  </div>
+</body>
+</html>`;
+
+  const blob = new Blob([reportDoc], { type: "text/html;charset=utf-8" });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  const safeName = appState.student.fullName.replace(/\s+/g, "_");
+  a.href = url;
+  a.download = `LIST_LAB_Zvit_${safeName}.html`;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
+
+function escapeHtml(str) {
+  return String(str)
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;");
+}
+</script>
+</body>
+</html>
